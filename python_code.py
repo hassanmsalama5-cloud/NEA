@@ -61,4 +61,3 @@ while True:
     again = input("do you want to make another booking (yes/no):")
     if again !="yes":
         break
-
