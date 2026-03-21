@@ -1,4 +1,4 @@
-White54623comedy_movies = ["anaconda","grown ups 1","grown ups 2","22 jumpstreet"]
+comedy_movies = ["anaconda","grown ups 1","grown ups 2","22 jumpstreet"]
 action_movies = ["gladiator 1", "gladiator 2", "maze runner","the working man"]
 horror_movies = ["annabelle comes home", "get out", "US", "conjuring"]
 sci_fi_movies = ["predator badlands","avengers endgame","hunger games part 1 mockingbird","hunger games part 2 mocking bird"]
