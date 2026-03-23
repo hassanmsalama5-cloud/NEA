@@ -12,8 +12,8 @@ thriller_tickets =[0,0,0,0]
 
 TICKET_PRICE = 8.00
 max_tickets = 200
-total_sold = 0  
-
+sold_tickets = 0
+total_sold = 0
 while True:
     name = input("Enter your name (or type 'exit' to quit): ")
     if name == "exit":
@@ -26,11 +26,13 @@ while True:
             print("Invalid genre. Try again.")
     while True:
         num_tickets = int(input("Enter number of tickets: "))
-        if 0 < num_tickets <= (max_tickets - total_sold):
+        if 0 < num_tickets <= (max_tickets - sold_tickets):
             break
         else:
             print("Not enough tickets available or invalid.")
     cost_price = num_tickets * TICKET_PRICE
+    sold_tickets == num_tickets
+    print(sold_tickets)
     if genre == "comedy":
         print(comedy_movies)
         while True:
@@ -38,9 +40,8 @@ while True:
             if 0 <= movie_selection < 4:
                 break
             print("Invalid selection.")
-
         comedy_tickets[movie_selection] +  num_tickets  == comedy_tickets[movie_selection] 
-        num_tickets == total_sold
+        total_sold = total_sold + sold_tickets
         print(f"Thank you {name} for selecting {comedy_movies[movie_selection]}, total price is £{cost_price:.2f}")
     elif genre == "action":
         print(action_movies)
@@ -50,7 +51,7 @@ while True:
                 break
             print("Invalid selection.")
         action_tickets[movie_selection] + num_tickets == action_tickets[movie_selection]
-        num_tickets == total_sold
+        total_sold = total_sold + sold_tickets
         print(f"Thank you {name} for selecting {action_movies[movie_selection]}, total price is £{cost_price:.2f}")
     elif genre == "horror":
         print(horror_movies)
@@ -60,7 +61,7 @@ while True:
                 break
             print("Invalid selection.")
         horror_tickets[movie_selection] + num_tickets ==  horror_tickets[movie_selection]
-        num_tickets == total_sold
+        total_sold = total_sold + sold_tickets
         print(f"Thank you {name} for selecting {horror_movies[movie_selection]}, total price is £{cost_price:.2f}")
     elif genre == "sci-fi":
         print(sci_fi_movies)
@@ -70,7 +71,7 @@ while True:
                 break
             print("Invalid selection.")
         sci_fi_tickets[movie_selection] + num_tickets == sci_fi_tickets[movie_selection]
-        num_tickets == total_sold
+        total_sold = total_sold + sold_tickets
         print(total_sold)
         print(f"Thank you {name} for selecting {sci_fi_movies[movie_selection]}, total price is £{cost_price:.2f}")
     elif genre == "thriller":
@@ -81,8 +82,7 @@ while True:
                 break
             print("Invalid selection.")
         thriller_tickets[movie_selection] + num_tickets == thriller_tickets[movie_selection]
-        total_sold == num_tickets
-        print(total_sold)
+        total_sold = total_sold + sold_tickets
         print(f"Thank you {name} for selecting {thriller_movies[movie_selection]}, total price is £{cost_price:.2f}")
     tickets_available = max_tickets - total_sold
     print(tickets_available)
