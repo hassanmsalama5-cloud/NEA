@@ -3,13 +3,11 @@ action_movies = ["gladiator 1", "gladiator 2", "maze runner","the working man"]
 horror_movies = ["annabelle comes home", "get out", "US", "conjuring"]
 sci_fi_movies = ["predator badlands","avengers endgame","hunger games part 1 mockingbird","hunger games part 2 mocking bird"]
 thriller_movies = ["after the hunt", "prisoners","inception", "carry on"]
-
 comedy_tickets =[0,0,0,0]
 action_tickets =[0,0,0,0]
 horror_tickets =[0,0,0,0]
 sci_fi_tickets =[0,0,0,0]
 thriller_tickets =[0,0,0,0]
-
 TICKET_PRICE = 8.00
 max_tickets = 200
 sold_tickets = 0
@@ -56,7 +54,7 @@ while True:
     elif genre == "horror":
         print(horror_movies)
         while True:
-            movie_selection = int(input("Select movie (0-3): "))
+            movie_selection = int(input("Select movie (0-3):"))
             if 0 <= movie_selection < 4:
                 break
             print("Invalid selection.")
