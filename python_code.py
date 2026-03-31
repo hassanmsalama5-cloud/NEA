@@ -70,7 +70,6 @@ while True:
             print("Invalid selection.")
         sci_fi_tickets[movie_selection] + num_tickets == sci_fi_tickets[movie_selection]
         total_sold = total_sold + sold_tickets
-        print(total_sold)
         print(f"Thank you {name} for selecting {sci_fi_movies[movie_selection]}, total price is £{cost_price:.2f}")
     elif genre == "thriller":
         print(thriller_movies)
@@ -82,8 +81,8 @@ while True:
         thriller_tickets[movie_selection] + num_tickets == thriller_tickets[movie_selection]
         total_sold = total_sold + sold_tickets
         print(f"Thank you {name} for selecting {thriller_movies[movie_selection]}, total price is £{cost_price:.2f}")
-    tickets_available = max_tickets - total_sold
-    print(tickets_available)
+        tickets_available = max_tickets - total_sold
+        print(tickets_available)
     if tickets_available == 0:
         print("There are no more tickets available")
         break
