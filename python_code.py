@@ -12,6 +12,7 @@ TICKET_PRICE = 8.00
 max_tickets = 200
 sold_tickets = 0
 total_sold = 0
+tickets_available = 200
 while True:
     name = input("Enter your name (or type 'exit' to quit): ")
     if name == "exit":
