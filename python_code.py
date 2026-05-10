@@ -19,7 +19,8 @@ while True:
         break
     while True:
         genre = input("Enter genre (comedy, action, horror, sci-fi, thriller): ").lower()
-        if genre in ["comedy","action","horror","sci-fi","thriller"]:
+        if genre 
+        in ["comedy","action","horror","sci-fi","thriller"]:
             break
         else:
             print("Invalid genre. Try again.")
