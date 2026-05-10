@@ -19,19 +19,20 @@ while True:
         break
     while True:
         genre = input("Enter genre (comedy, action, horror, sci-fi, thriller): ").lower()
-        if genre 
-        in ["comedy","action","horror","sci-fi","thriller"]:
+        if genre in ["comedy","action","horror","sci-fi","thriller"]:
             break
         else:
             print("Invalid genre. Try again.")
     while True:
         num_tickets = int(input("Enter number of tickets: "))
-        if 0 < num_tickets <= (max_tickets - sold_tickets):
+        sold_tickets = sold_tickets + num_tickets
+        print(sol)
+        if 0 < num_tickets < (max_tickets - sold_tickets):
             break
         else:
             print("Not enough tickets available or invalid.")
     cost_price = num_tickets * TICKET_PRICE
-    sold_tickets == num_tickets
+    sold_tickets = num_tickets
     print(sold_tickets)
     if genre == "comedy":
         print(comedy_movies)
