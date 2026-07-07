@@ -2,7 +2,7 @@ import sqlite3
 conn = sqlite3.connect("cinema.db")
 cursor = conn.cursor()
 cursor.execute("""
-INSERT INTO Films (Title, Genre, AgeRating, Runtime, Description) VALUES
+INSERT INTO Films (Title, Genre, AgeRating, duration, Description) VALUES
 ('anaconda', 'Comedy', 'R', 95, 'A documentary film crew is hunted by a giant snake while exploring the Amazon rainforest.'),
 ('grown ups 1', 'Comedy', 'PG-13', 102, 'Five childhood friends reunite for a weekend after the death of their basketball coach.'),
 ('grown ups 2', 'Comedy', 'PG-13', 101, 'Lenny and his friends enjoy another chaotic summer filled with family and hilarious adventures.'),
@@ -27,8 +27,6 @@ INSERT INTO Films (Title, Genre, AgeRating, Runtime, Description) VALUES
 ('prisoners', 'Thriller', '15', 153, 'A desperate father searches for his missing daughter when the police run out of leads.'),
 ('inception', 'Thriller', '12A', 148, 'A skilled thief enters dreams to steal secrets but is given one impossible mission.'),
 ('carry on', 'Thriller', '15', 119, 'An airport security officer becomes entangled in a dangerous criminal conspiracy.');
-# cursor.execute("DELETE FROM films WHERE Title = ?", ('Inception',))
-
 """)
 # cursor.execute(
 #     "UPDATE Customers SET password = ? WHERE CustomerID = ?",
