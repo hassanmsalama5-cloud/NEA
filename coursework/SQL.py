@@ -32,6 +32,51 @@ INSERT INTO Films (Title, Genre, AgeRating, duration, Description) VALUES
 #     "UPDATE Customers SET password = ? WHERE CustomerID = ?",
 # )
 # cursor.execute("DELETE FROM films WHERE Title = ?", ('Inception',))
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS films ("""
+    "FilmID INTEGER PRIMARY KEY AUTOINCREMENT,"
+    "Title TEXT NOT NULL,"
+    "Genre TEXT NOT NULL,"
+    "AgeRating TEXT NOT NULL,"
+    "duration INTEGER NOT NULL,"
+    "Description TEXT NOT NULL"
+    """)
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS Screenings (
+    ScreeningID INTEGER PRIMARY KEY AUTOINCREMENT,
+    FilmID INTEGER NOT NULL,
+    ScreeningTime TEXT NOT NULL,
+    ScreeningDate TEXT NOT NULL,
+    ScreenNumber INTEGER NOT NULL,
+    FOREIGN KEY (FilmID) REFERENCES Films(FilmID)
+)
+""")
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS seats (
+    seatID INTEGER PRIMARY KEY AUTOINCREMENT,
+    screeningID INTEGER NOT NULL,
+    seatnumber TEXT NOT NULL,
+    screennumber INTEGER NOT NULL,
+    isavailable BOOLEAN NOT NULL DEFAULT 1,
+    FOREIGN KEY (screeningID) REFERENCES Screenings(ScreeningID)
+)
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS bookings (
+    bookingID INTEGER PRIMARY KEY AUTOINCREMENT,
+    customerID INTEGER NOT NULL,
+    screeningID INTEGER NOT NULL,
+    seatID INTEGER NOT NULL,
+    bookingDate TEXT NOT NULL,
+    NumberOfTickets INTEGER NOT NULL,
+    TotalPrice REAL NOT NULL,
+    FOREIGN KEY (customerID) REFERENCES Customers(CustomerID),
+    FOREIGN KEY (screeningID) REFERENCES Screenings(ScreeningID),
+    FOREIGN KEY (seatID) REFERENCES seats(seatID)
+    UNIQUE (screeningID, seatID)
+)
+""")
 
 cursor.execute(
     "UPDATE Customers SET password = ? WHERE CustomerID = ?",
