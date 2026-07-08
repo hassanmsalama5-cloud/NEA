@@ -33,15 +33,6 @@ INSERT INTO Films (Title, Genre, AgeRating, duration, Description) VALUES
 # )
 # cursor.execute("DELETE FROM films WHERE Title = ?", ('Inception',))
 cursor.execute("""
-CREATE TABLE IF NOT EXISTS films ("""
-    "FilmID INTEGER PRIMARY KEY AUTOINCREMENT,"
-    "Title TEXT NOT NULL,"
-    "Genre TEXT NOT NULL,"
-    "AgeRating TEXT NOT NULL,"
-    "duration INTEGER NOT NULL,"
-    "Description TEXT NOT NULL"
-    """)
-cursor.execute("""
 CREATE TABLE IF NOT EXISTS Screenings (
     ScreeningID INTEGER PRIMARY KEY AUTOINCREMENT,
     FilmID INTEGER NOT NULL,
