@@ -2,9 +2,6 @@ import sqlite3
 conn = sqlite3.connect("cinema.db")
 cursor = conn.cursor()
 comedy_tickets =[0,0,0,0]
-
-
-
 action_tickets =[0,0,0,0]
 horror_tickets =[0,0,0,0]
 sci_fi_tickets =[0,0,0,0]

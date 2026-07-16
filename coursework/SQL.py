@@ -43,12 +43,7 @@ CREATE TABLE IF NOT EXISTS Screenings (
     FOREIGN KEY (FilmID) REFERENCES Films(FilmID)
 )
 """)
-
-cursor.executemany("""
-INSERT INTO Screenings (FilmID, ScreeningTime, ScreeningDate, ScreenNumber)
-VALUES (?, ?, ?, ?)
-""", Screenings)
-screenings = [
+Screenings = [
     (1, "10:00", "2026-07-10", 1),
     (1, "15:00", "2026-07-10", 2),
 
@@ -109,7 +104,11 @@ screenings = [
     (20, "15:00", "2026-07-10", 5),
     (20, "20:00", "2026-07-10", 1)
 ]
-connection.commit()
+cursor.executemany("""
+INSERT INTO Screenings (FilmID, ScreeningTime, ScreeningDate, ScreenNumber)
+VALUES (?, ?, ?, ?)
+""", Screenings)
+conn.commit()
 
 
 cursor.execute("""
