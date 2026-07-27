@@ -1,3 +1,4 @@
+from datetime import date
 import sqlite3
 conn = sqlite3.connect("cinema.db")
 cursor = conn.cursor()
@@ -124,67 +125,97 @@ def choose_screening(movie_id):
         print("No screenings available.")
         return None
 
-    for i, screenings in enumerate(screenings):
+    for i, screening in enumerate(screenings):
         print(f"\n{i}")
-        print("Date:", screenings[1])
-        print("Time:", screenings[2])
-        print("Screen:", screenings[3])
+        print("Date:", screening[1])
+        print("Time:", screening[2])
+        print("Screen:", screening[3])
 
     while True:
         try:
             choice = int(input("Select a screening: "))
 
             if 0 <= choice < len(screenings):
-                return screenings[choice][0]
+                return int(screenings[choice][0])
             
-
-            print("Invalid selection.")
+            else:
+                print("Invalid selection.")
 
         except ValueError:
             print("Please enter a number.")
 screen_id = choose_screening(movie_id)
-def choose_seat(screen_id):
+def choose_seats(screen_id):
 
     while True:
+        try:
+            number_of_tickets = int(input("How many tickets would you like? "))
 
-        cursor.execute("""
-            SELECT seatID, seatnumber, isavailable
-            FROM Seats
-            WHERE screeningID = ?
-        """, (screen_id,))
+            if 0 < number_of_tickets <= max_tickets:
+                break
 
-        seats = cursor.fetchall()
+            print(f"Please enter a number between 1 and {max_tickets}.")
 
-        print("\nAvailable seats")
+        except ValueError:
+            print("Please enter a valid number.")
 
-        for seat in seats:
-            if seat[2]:
-                print(seat[1], "- Available")
-            else:
-                print(seat[1], "- Booked")
+    total_price = TICKET_PRICE * number_of_tickets
 
-        seat_choice = input("\nChoose a seat: ").upper()
+    print(f"\nPrice per ticket: £{TICKET_PRICE:.2f}")
+    print(f"Total price: £{total_price:.2f}")
 
-        cursor.execute("""
-            SELECT seatID, isavailable
-            FROM Seats
-            WHERE screeningID = ?
-            AND seatnumber = ?
-        """, (screen_id, seat_choice))
+    selected_seats = []
 
-        seat = cursor.fetchone()
+    for i in range(number_of_tickets):
 
-        if seat is None:
-            print("Seat does not exist.")
-            continue
+        while True:
 
-        if seat[1] == False:
-            print("That seat is already booked.")
-            continue
+            seat_choice = input(f"Choose seat {i+1}: ").upper()
 
-        confirm = input("Confirm booking? (Y/N): ").upper()
+            if seat_choice in [seat[1] for seat in selected_seats]:
+                print("You have already selected that seat.")
+                continue
 
-        if confirm == "Y":
+            cursor.execute("""
+                SELECT seatID, isavailable
+                FROM Seats
+                WHERE screeningID = ?
+                AND seatnumber = ?
+            """, (screen_id, seat_choice))
+
+            seat = cursor.fetchone()
+
+           
+            if seat is None:
+                print("Seat does not exist.")
+                continue
+
+            if seat[1] == False:
+                print("That seat is already booked.")
+                continue
+
+            selected_seats.append((seat[0], seat_choice))
+            break
+
+    confirm = input("Confirm booking? (Y/N): ").upper()
+
+    if confirm == "Y":
+        for seat in selected_seats:
+                cursor.execute("""
+                SELECT isavailable
+                FROM Seats
+                WHERE seatID = ?
+                """, (seat[0],))
+                result = cursor.fetchone()
+        
+                if result is None:
+                    print("Seat not found.")
+                    return None
+        
+                if result[0] == False:
+                    print(f"Seat {seat[1]} has just been booked by another customer.")
+                    print("Please choose your seats again.")
+                    return None 
+        for seat in selected_seats:
 
             cursor.execute("""
                 UPDATE Seats
@@ -192,15 +223,50 @@ def choose_seat(screen_id):
                 WHERE seatID = ?
             """, (seat[0],))
 
-            conn.commit()
+        conn.commit()
 
-            print("Booking successful!")
+        print("Booking confirmed!")
 
-            return seat[0]
+        return selected_seats, number_of_tickets, total_price
 
-        print("Booking cancelled.")
-choose_seat(screen_id)
+    print("Booking cancelled.")
+    return None
+Seats_choosen = choose_seats(screen_id)
 
+def make_booking(customerID, screen_ID, number_of_tickets, total_price):
+
+    booking_date = date.today()
+
+    cursor.execute("""
+        INSERT INTO bookings
+        (customerID, screeningID, bookingDate,
+         NumberOfTickets, TotalPrice)
+        VALUES (?, ?, ?, ?, ?)
+    """, (
+        customerID,
+        screen_ID,
+        booking_date,
+        number_of_tickets,
+        total_price
+    ))
+
+    conn.commit()
+
+    booking_id = cursor.lastrowid
+    return booking_id
+bookingID = make_booking(logged_in_user, screen_id, Seats_choosen[1], Seats_choosen[2])
+def add_booking_seats(bookingID, selected_seats):
+
+    for seat in selected_seats:
+
+        cursor.execute("""
+            INSERT INTO BookingSeats
+            (bookingID, seatID)
+            VALUES (?, ?)
+        """, (bookingID, seat[0]))
+
+    conn.commit()
+add_booking_seats (bookingID, Seats_choosen[0])
     # for row in range(10):
     #    for col in range(10):
     #        [row][col] = 0
