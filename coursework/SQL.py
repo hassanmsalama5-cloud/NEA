@@ -165,11 +165,16 @@ CREATE TABLE IF NOT EXISTS bookings (
     bookingDate TEXT NOT NULL,
     NumberOfTickets INTEGER NOT NULL,
     TotalPrice REAL NOT NULL,
-    FOREIGN KEY (customerID) REFERENCES Customers(CustomerID),
-    UNIQUE (screeningID)
+    FOREIGN KEY (customerID) REFERENCES Customers(CustomerID)
 )
 """)
-
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS admins(
+    AdminID INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL
+)
+""")
 cursor.execute(
     "UPDATE Customers SET password = ? WHERE CustomerID = ?",
     ("123456", 1)
@@ -184,8 +189,5 @@ cursor.execute(
     "SELECT * FROM films WHERE Genre = ?",
     ("comedy",)
 )
-comedy_movies = cursor.fetchall()
-print(comedy_movies)
-[(6, 'anaconda', 'comedy', 'R', 95, 'A documentary film crew is hunted by a giant snake while on a remote island in the Amazonrainforest.'), (7, '22 jumpstreet', 'comedy', 'R', 112, 'Two underachieving cops are sent back to a local high school to blendin and bring down a synthetic drug ring.'), (8, 'grown ups 1', 'comedy', 'R', 102, 'After their high school basketball coach passes away, five good friends reunite for a Fourth of July holiday weekend.'), (9, 'grown ups 2', 'comedy', 'R', 101, 'The fivefriends return to their hometown for a reunion with their families and old friends.'), (11, 'anaconda', 'comedy', 'R', 95, 'A documentary film crew is hunted by a giant snake while on a remote island in the Amazon rainforest.'), (12, '22 jumpstreet', 'comedy', 'R', 112, 'Two underachieving cops are sent back to a local high school to blend in and bring down a synthetic drug ring.'), (13, 'grown ups 1', 'comedy', 'R', 102, 'After their high school basketball coach passes away, five good friends reunite for a Fourth of July holiday weekend.'), (14, 'grown ups 2', 'comedy', 'R', 101, 'The five friends return to their hometown fora reunion with their families and old friends.')]
+cursor.execute("DROP TABLE IF EXISTS admins")
 conn.commit()
-conn.close()
