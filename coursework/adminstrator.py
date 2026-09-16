@@ -131,6 +131,16 @@ def edit_screening():
     conn.commit()
 
     print("Screening updated successfully.")
+def reset_seats():
+    cursor.execute("""
+        UPDATE Seats
+        SET isavailable = TRUE
+    """)
+    conn.commit()
+    print("All seats have been reset.")
+
+
+reset_seats()
 
 def administrator_menu():
     while True:
@@ -143,6 +153,7 @@ def administrator_menu():
 5. Edit Film
 6. Edit Screening
 7. Logout
+8. Reset Seats
 """)
 
         choice = input("Choice: ")
@@ -168,4 +179,6 @@ def administrator_menu():
         elif choice == "7":
             print("Logging out...")
             break
+        elif choice == "8":
+            reset_seats()
 administrator_menu()
