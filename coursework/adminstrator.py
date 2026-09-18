@@ -7,14 +7,14 @@ def admin_sign_up():
     password = input("New password: ")
 
     cursor.execute("""
-        INSERT INTO Admins (username, password)
+        INSERT INTO admins (username, password)
         VALUES (?, ?)
     """, (username, password))
 
     conn.commit()
 
     print("Administrator added.")
-# admin_sign_up()
+admin_sign_up()
 def admin_login():
     while True:
         username = input("Enter your admin username: ")
@@ -32,7 +32,7 @@ def admin_login():
             admin_id = admin[0]
             return admin_id 
         print("Invalid admin credentials. Please try again.\n")
-admin_id = admin_login()
+# admin_id = admin_login()
 def add_film():
     title = input("Enter film title: ")
     genre = input("Enter film genre: ")
@@ -139,9 +139,6 @@ def reset_seats():
     conn.commit()
     print("All seats have been reset.")
 
-
-reset_seats()
-
 def administrator_menu():
     while True:
 
@@ -177,8 +174,8 @@ def administrator_menu():
             edit_screening()
 
         elif choice == "7":
-            print("Logging out...")
-            break
-        elif choice == "8":
             reset_seats()
+        elif choice == "8":
+           print("Logging out...")
+           break
 administrator_menu()
