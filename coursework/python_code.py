@@ -63,7 +63,7 @@ def log_in():
         else:
             print("Invalid username or password. Please try again.\n")
 
-
+#log_in()
 def choose_movie(username):
     while True:
         genre = input("Enter genre (comedy, action, horror, sci-fi, thriller): ").lower()
