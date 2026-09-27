@@ -180,14 +180,15 @@ def choose_seats(screen_id):
         ORDER BY seatnumber
     """, (screen_id,))
 
-available_seats = cursor.fetchall()
+    available_seats = cursor.fetchall()
 
-print("\nAvailable seats:")
+    print("\nAvailable seats:")
 
-for seat in available_seats:
-    print(seat[0], end="  ")
+    for seat in available_seats:
+        print(seat[0], end="  ")
 
-print("\n")
+    print("\n")
+
     while True:
         try:
             number_of_tickets = int(input("How many tickets would you like? "))
