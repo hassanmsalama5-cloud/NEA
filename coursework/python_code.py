@@ -63,15 +63,18 @@ def log_in():
         else:
             print("Invalid username or password. Please try again.\n")
 
-#log_in()
+logged_in_user = log_in()
 def choose_movie(username):
     while True:
-        genre = input("Enter genre (comedy, action, horror, sci-fi, thriller): ").lower()
+        try:
+            genre = input("Enter genre (comedy, action, horror, sci-fi, thriller): ").lower()
 
-        if genre in ["comedy", "action", "horror", "sci-fi", "thriller"]:
-            break
-        else:
-            print("Invalid genre. Try again.")
+            if genre in ["comedy", "action", "horror", "sci-fi", "thriller"]:
+                    break
+            else:
+                    print("Invalid genre. Try again.")
+        except ValueError:
+            print("Please enter a valid genre . Please try again.")
 
     cursor.execute("""
         SELECT Title, Genre, AgeRating, Duration, Description, FilmID
@@ -108,7 +111,6 @@ def choose_movie(username):
     movie = selected_movie
     print(f"Thank you {username} for selecting {selected_movie}.")
     return film_id
-logged_in_user = log_in()
 movie_id = choose_movie(logged_in_user)
 print(movie_id)
 def choose_screening(movie_id):
@@ -170,6 +172,22 @@ def choose_seats(screen_id):
         print(seat[0], end="  ")
     print("\n")
 
+    cursor.execute("""
+        SELECT seatnumber
+        FROM Seats
+        WHERE screeningID = ?
+        AND isavailable = TRUE
+        ORDER BY seatnumber
+    """, (screen_id,))
+
+available_seats = cursor.fetchall()
+
+print("\nAvailable seats:")
+
+for seat in available_seats:
+    print(seat[0], end="  ")
+
+print("\n")
     while True:
         try:
             number_of_tickets = int(input("How many tickets would you like? "))
@@ -203,6 +221,7 @@ def choose_seats(screen_id):
                 FROM Seats
                 WHERE screeningID = ?
                 AND seatnumber = ?
+                AND isavailable = TRUE
             """, (screen_id, seat_choice))
 
             seat = cursor.fetchone()
@@ -220,35 +239,30 @@ def choose_seats(screen_id):
 
     confirm = input("Confirm booking? (Y/N): ").upper()
 
-    if confirm != "Y":
-        print("Booking cancelled.")
-        return None
+    if confirm == "Y":
+        for seat in selected_seats:
+                cursor.execute("""
+                SELECT isavailable
+                FROM Seats
+                WHERE seatID = ?
+                """, (seat[0],))
+                result = cursor.fetchone()
+        
+                if result is None:
+                    print("Seat not found.")
+                    return None
+        
+                if result[0] == False:
+                    print(f"Seat {seat[1]} has just been booked by another customer.")
+                    print("Please choose your seats again.")
+                    return None 
+        for seat in selected_seats:
 
-    # Check again before booking
-    for seat in selected_seats:
-        cursor.execute("""
-            SELECT isavailable
-            FROM Seats
-            WHERE seatID = ?
-        """, (seat[0],))
-
-        result = cursor.fetchone()
-
-        if result is None:
-            print("Seat not found.")
-            return None
-
-        if not result[0]:
-            print(f"Seat {seat[1]} has just been booked by another customer.")
-            print("Please choose your seats again.")
-            return None
-
-    for seat in selected_seats:
-        cursor.execute("""
-            UPDATE Seats
-            SET isavailable = FALSE
-            WHERE seatID = ?
-        """, (seat[0],))
+            cursor.execute("""
+                UPDATE Seats
+                SET isavailable = FALSE
+                WHERE seatID = ?
+            """, (seat[0],))
 
     conn.commit()
 
