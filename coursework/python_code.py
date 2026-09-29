@@ -152,13 +152,12 @@ if screen_id is None:
     raise SystemExit
 def choose_seats(screen_id):
 
-    # Display available seats
     cursor.execute("""
         SELECT seatnumber
         FROM Seats
         WHERE screeningID = ?
         AND isavailable = TRUE
-        ORDER BY seatnumber
+        ORDER BY seatnumber ASC
     """, (screen_id,))
 
     available_seats = cursor.fetchall()
@@ -168,6 +167,7 @@ def choose_seats(screen_id):
         return None
 
     print("\nAvailable seats:")
+    print(available_seats)
     while True:
         try:
             number_of_tickets = int(input("How many tickets would you like? "))
