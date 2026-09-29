@@ -168,27 +168,6 @@ def choose_seats(screen_id):
         return None
 
     print("\nAvailable seats:")
-    for seat in available_seats:
-        print(seat[0], end="  ")
-    print("\n")
-
-    cursor.execute("""
-        SELECT seatnumber
-        FROM Seats
-        WHERE screeningID = ?
-        AND isavailable = TRUE
-        ORDER BY seatnumber
-    """, (screen_id,))
-
-    available_seats = cursor.fetchall()
-
-    print("\nAvailable seats:")
-
-    for seat in available_seats:
-        print(seat[0], end="  ")
-
-    print("\n")
-
     while True:
         try:
             number_of_tickets = int(input("How many tickets would you like? "))
