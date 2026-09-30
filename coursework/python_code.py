@@ -9,7 +9,6 @@ sci_fi_tickets =[0,0,0,0]
 thriller_tickets = [0,0,0,0]
 TICKET_PRICE = 10.99
 max_tickets = 100
-sold_tickets = 0
 tickets_available = 100
 def sign_up():
     while True:
@@ -103,7 +102,7 @@ def choose_movie(username):
             print("Invalid selection.")
 
         except ValueError:
-            print("Please enter a number.")
+            print("Please enter a valid movie number.")
 
     selected_movie = movies[movie_selection][0]
     film_id = movies[movie_selection][5]
