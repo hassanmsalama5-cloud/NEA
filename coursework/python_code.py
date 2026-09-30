@@ -286,8 +286,7 @@ def add_booking_seats(bookingID, selected_seats):
             (bookingID, seatID)
             VALUES (?, ?)
         """, (bookingID, seat[0]))
-
-    conn.commit()
+        conn.commit()
 add_booking_seats (bookingID, Seats_choosen[0])
     # for row in range(10):
     #    for col in range(10):
