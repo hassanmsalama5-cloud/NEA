@@ -165,7 +165,8 @@ CREATE TABLE IF NOT EXISTS bookings (
     bookingDate TEXT NOT NULL,
     NumberOfTickets INTEGER NOT NULL,
     TotalPrice REAL NOT NULL,
-    FOREIGN KEY (customerID) REFERENCES Customers(CustomerID)
+    FOREIGN KEY (customerID) REFERENCES Customers(CustomerID),
+    FOREIGN KEY (screeningID) REFERENCES Screenings(ScreeningID)
 )
 """)
 cursor.execute("""
@@ -189,5 +190,5 @@ cursor.execute(
     "SELECT * FROM films WHERE Genre = ?",
     ("comedy",)
 )
-cursor.execute("DROP TABLE IF EXISTS admins")
+
 conn.commit()
