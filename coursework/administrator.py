@@ -34,6 +34,7 @@ def admin_login():
         print("Invalid admin credentials. Please try again.\n")
 # admin_id = admin_login()
 def add_film():
+
     title = input("Enter film title: ")
     genre = input("Enter film genre: ")
     duration = input("Enter film duration (in minutes): ")
@@ -72,13 +73,13 @@ def remove_film():
             print("Please enter a valid film ID.")
             continue
 
-    cursor.execute("""
-        DELETE FROM films WHERE FilmID = ?
-    """, (film_id,))
+        cursor.execute("""
+             DELETE FROM films WHERE FilmID = ?
+        """, (film_id,))
 
-    conn.commit()
+        conn.commit()
 
-    print("Film removed successfully.")
+        print("Film removed successfully.")
 
 def remove_screening():
     while True:
@@ -149,8 +150,8 @@ def administrator_menu():
 4. Remove Film
 5. Edit Film
 6. Edit Screening
-7. Logout
-8. Reset Seats
+7. Reset seats 
+8. Logout
 """)
 
         choice = input("Choice: ")
@@ -178,4 +179,4 @@ def administrator_menu():
         elif choice == "8":
            print("Logging out...")
            break
-#administrator_menu()
+administrator_menu()
