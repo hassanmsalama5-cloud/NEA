@@ -14,7 +14,7 @@ def admin_sign_up():
     conn.commit()
 
     print("Administrator added.")
-admin_sign_up()
+# admin_sign_up()
 def admin_login():
     while True:
         username = input("Enter your admin username: ")
@@ -32,7 +32,7 @@ def admin_login():
             admin_id = admin[0]
             return admin_id 
         print("Invalid admin credentials. Please try again.\n")
-# admin_id = admin_login()
+admin_id = admin_login()
 def add_film():
 
     title = input("Enter film title: ")

@@ -243,10 +243,13 @@ def choose_seats(screen_id):
                 WHERE seatID = ?
             """, (seat[0],))
 
-    conn.commit()
+        conn.commit()
 
-    print("Booking confirmed!")
-    return selected_seats, number_of_tickets, total_price
+        print("Booking confirmed!")
+        print()
+        return selected_seats, number_of_tickets, total_price
+    else: 
+        print("Booking cancelled.")
 
 
 Seats_choosen = choose_seats(screen_id)
