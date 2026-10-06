@@ -2,13 +2,6 @@ from datetime import date
 import sqlite3
 conn = sqlite3.connect("cinema.db")
 cursor = conn.cursor()
-comedy_tickets =[0,0,0,0]
-action_tickets =[0,0,0,0]
-horror_tickets =[0,0,0,0]
-sci_fi_tickets =[0,0,0,0]
-thriller_tickets = [0,0,0,0]
-TICKET_PRICE = 10.99
-max_tickets = 100
 tickets_available = 100
 def sign_up():
     while True:
@@ -107,10 +100,9 @@ def choose_movie(username):
     selected_movie = movies[movie_selection][0]
     film_id = movies[movie_selection][5]
 
-    movie = selected_movie
     print(f"Thank you {username} for selecting {selected_movie}.")
-    return film_id
-movie_id = choose_movie(logged_in_user)
+    return film_id,selected_movie
+movie_id, selected_movie = choose_movie(logged_in_user)
 print(movie_id)
 def choose_screening(movie_id):
 
@@ -244,15 +236,30 @@ def choose_seats(screen_id):
             """, (seat[0],))
 
         conn.commit()
-
-        print("Booking confirmed!")
-        print()
+        
         return selected_seats, number_of_tickets, total_price
     else: 
         print("Booking cancelled.")
 
 
 Seats_choosen = choose_seats(screen_id)
+booking_details = {
+            "customer": logged_in_user,
+            "movie": selected_movie,
+            "screening": screen_id,
+            "number_of_tickets": Seats_choosen[1],
+            "seats": [seat[1] for seat in Seats_choosen[0]],
+            "total_price": Seats_choosen[2]
+        }
+
+    
+print("Booking confirmed!")
+print("Customer:", booking_details["customer"])
+print("Movie:", booking_details["movie"])
+print("Screening:", booking_details["screening"])
+print("Number of tickets:", booking_details["number_of_tickets"])
+print("Seats:", ", ".join(booking_details["seats"]))
+print(f"Total price: £{booking_details['total_price']:.2f}")
 
 if Seats_choosen is None:
     conn.close()
