@@ -2,7 +2,7 @@ from datetime import date
 import sqlite3
 conn = sqlite3.connect("cinema.db")
 cursor = conn.cursor()
-tickets_available = 100
+available_tickets= 100
 ticket_price = 10.00
 tickets_remaining = 0 
 tickets_Sold=0 
