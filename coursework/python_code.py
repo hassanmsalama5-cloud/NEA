@@ -3,6 +3,9 @@ import sqlite3
 conn = sqlite3.connect("cinema.db")
 cursor = conn.cursor()
 tickets_available = 100
+ticket_price = 10.00
+tickets_remaining = 0 
+tickets_Sold=0 
 def sign_up():
     while True:
 
@@ -171,9 +174,10 @@ def choose_seats(screen_id):
         except ValueError:
             print("Please enter a valid number.")
 
-    total_price = TICKET_PRICE * number_of_tickets
-
-    print(f"\nPrice per ticket: £{TICKET_PRICE:.2f}")
+    total_price = ticket_price * number_of_tickets
+    tickets_remaining = available_tickets - number_of_tickets
+    tickets_Sold = tickets_Sold + number_of_tickets 
+    print(f"\nPrice per ticket: £{ticket_price:.2f}")
     print(f"Total price: £{total_price:.2f}")
 
     selected_seats = []
