@@ -15,12 +15,9 @@ def signin():
          con = sqlite3.connect(DATABASE)
          cur = con.cursor()
          cur.execute(
-      """,
-         cur.execute(
     "SELECT * FROM Customers WHERE username=? AND password=?",
     (username, password)
-      """,
-      )
+         )
       customer = cur.fetchone()
       con.close()
       if customer:
