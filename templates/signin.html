@@ -1,13 +1,21 @@
 <!DOCTYPE html>
-<html>
-<head> 
-    <title>Login</title>        
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CineBook-LOGIN</title>
+    
 </head>
 <body>
+    <h1>Welcome to CineBook</h1>
+    <p>Sign in to CineBook to select your movies</p>
     <form method ="POST">
-        username : <input name ="name" type = "text"><br>
-        password : <input name ="password" type = "password">
+        username : <input name ="username" type = "text" required><br>
+        password : <input name ="password" type = "password" required>
         <button type="submit">Login</button>
+        <a href="/signup">signup</a>  
     </form>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
 </body>
 </html>
