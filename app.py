@@ -9,7 +9,6 @@ def signin():
    if request.method == "POST":
       username = request.form.get("username","").strip()
       password = request.form.get("password","").strip()
-   
       if not username or not password:
           error = "Please complete all fields."
       else:
