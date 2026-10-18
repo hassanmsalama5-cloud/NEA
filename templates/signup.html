@@ -1,7 +1,29 @@
-<h1>Signup</h1>
-<form method ="POST">
-username : <input name ="username" type = "text"><br>
-password : <input name ="password" type = "password">
-<button type="submit">Signup</button>
-</form>
-<a href="/">login</a>  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CineBook-SIGNUP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+</head>
+<body>
+    <h1>Welcome to CineBook</h1>
+    <p>Create an account to CineBook to select your movies:</p>
+    <form method ="POST">
+        <label for="username">Username:</label><br>
+        <input name ="username" type = "text" required><br>
+        <label for="password">Password:</label><br>
+        <input name ="password" type = "password" required><br>
+        <label for="confirm_password">Confirm Password:</label><br>
+        <input name ="confirm_password" type = "password" required><br>
+        <button type="submit">signup</button>
+        <p> already have an account? <a href="/signin">Login</a></p> 
+    </form>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+    {% if success %}
+    <p>{{ success }}</p>
+{% endif %}
+</body>
+</html>

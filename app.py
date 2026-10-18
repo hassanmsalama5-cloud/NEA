@@ -1,11 +1,15 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for
-from werkzeug.security import check_password_hash
+# from werkzeug.security import check_password_hash
 app = Flask(__name__)
 DATABASE = "cinema.db"
+@app.route("/")
+def home():
+    return redirect(url_for("signin"))
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
    error = None
+   success = None
    if request.method == "POST":
       username = request.form.get("username","").strip()
       password = request.form.get("password","").strip()
@@ -18,22 +22,39 @@ def signin():
     "SELECT * FROM Customers WHERE username=? AND password=?",
     (username, password)
          )
-      customer = cur.fetchone()
-      con.close()
+         customer = cur.fetchone()
+         con.close()
       if customer:
-            return "access granted"
+            success = "Account logged in successfully."
       else:
        error = "Invalid username or password."
-   return render_template("signin.html",error=error)
+   return render_template("signin.html",error=error, success=success)
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-   if request.method == "POST":
-      con = sqlite3.connect(DATABASE)
-      cur = con.cursor()
-      cur.execute("INSERT INTO Customers (username, password) VALUES (?, ?)", (request.form['username'], request.form['password']))
-      con.commit()
-      con.close()
-      return "signup successful"
-   return render_template('signup.html')
+      error = None
+      success = None
+      if request.method == "POST":
+         username = request.form.get("username","").strip()
+         password = request.form.get("password","").strip()
+         confirm_password = request.form.get("confirm_password","").strip()
+         if not username or not password or not confirm_password:
+            error = "Please complete all fields."
+         elif password != confirm_password:
+               error = "Passwords do not match."
+         else:
+               con = sqlite3.connect(DATABASE)
+               cur = con.cursor()
+               cur.execute("SELECT * FROM Customers WHERE username = ?",(username,))
+               existing_customer = cur.fetchone()
+               if existing_customer:
+                error = "Username already exists."
+               else:
+                  cur.execute("INSERT INTO Customers (username, password) VALUES (?, ?)", (username, password))
+                  con.commit()
+                  success = "Account created successfully."
+                  con.close()
+      return render_template('signup.html', error=error, success=success)\
 
+if __name__ == "__main__":
+    app.run(debug=True)

@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>CineBook-LOGIN</title>
-    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Welcome to CineBook</h1>
-    <p>Sign in to CineBook to select your movies</p>
+    <h1 style="font-size: 24px;">Welcome to CineBook</h1>
+    <p>Sign in to CineBook to select your movies:</p>
     <form method ="POST">
-        username : <input name ="username" type = "text" required><br>
-        password : <input name ="password" type = "password" required>
+        <label for="username">Username:</label><br>
+        <input name ="username" type = "text" required><br>
+        <label for="password">Password:</label><br>
+        <input name ="password" type = "password" required><br>
         <button type="submit">Login</button>
-        <a href="/signup">signup</a>  
+        <p>Don't have an account? <a href="/signup">sign up</a></p> 
     </form>
     {% if error %}
         <p>{{ error }}</p>
+    {% endif %}
+    {% if success %}
+        <p>{{ success }}</p>
     {% endif %}
 </body>
 </html>
