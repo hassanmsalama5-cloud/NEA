@@ -71,23 +71,7 @@ def films(genre):
     cur = con.cursor()
     cur.execute("SELECT * FROM Films WHERE genre = ?", (genre.title(),))
     films = cur.fetchall()
-    print("Number of films found:", len(films))
-    print("Films:", [film["Title"] for film in films])
-    cur.execute("""
-    SELECT Genre, COUNT(*)
-    FROM Films
-    GROUP BY Genre
-""")
-    print("Films stored by genre:", cur.fetchall())
-    cur.execute("""
-    SELECT Genre, COUNT(*)
-    FROM Films
-    GROUP BY Genre
-""")
-
-    for row in cur.fetchall():
-        print("Genre:", row[0], "| Count:", row[1])
-        con.close()
+    con.close()
     return render_template("films.html", genre=genre,films=films)
 if __name__ == "__main__":
     app.run(debug=True)
