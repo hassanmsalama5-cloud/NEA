@@ -54,14 +54,24 @@ def signup():
                   cur.execute("INSERT INTO Customers (username, password) VALUES (?, ?)", (username, password))
                   con.commit()
                   success = "Account created successfully."
-                  return redirect(url_for("genre"))
+                  return redirect(url_for("signin"))
                   con.close()
       return render_template('signup.html', error=error, success=success)
 @app.route("/genre")
 def genre():
+    
     return render_template("genre.html")
 @app.route("/films/<genre>")
 def films(genre):
-    return render_template("films.html", genre=genre)
+    valid_genres=["comedy", "action", "horror", "sci-fi", "thriller"]
+    if genre not in valid_genres:
+        return redirect(url_for("genre"))
+    con = sqlite3.connect(DATABASE)
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("SELECT * FROM Films WHERE genre = ?", (genre.title(),))
+    films = cur.fetchall()
+    con.close()
+    return render_template("films.html", genre=genre,films=films)
 if __name__ == "__main__":
     app.run(debug=True)

@@ -5,5 +5,23 @@
     <title>CineBook-FILMS</title>
 </head>
 <body>
-    <h1>Welcome to CineBook</h1>
+    <h1>{{ genre.title() }} Films</h1>
+    {%if films %}
+        {% for film in films %}
+        <div>
+        <h2> {film['Title']}</h2>
+        <p>genre :{{ film['Genre'] }}</p>
+        <p>age rating :{{ film['AgeRating'] }}</p>
+        <p>duration :{{ film['Duration'] }} in minutes</p>
+        <p>description :{{ film['Description'] }}</p>
+        <form action="{{ url_for('select_film') }}" method="post">
+            <input type="hidden" name="film_id" value="{{film['FilmID'] }}">
+            <button type="submit">Select Film</button>
+        </div>
+        </form>
+        {% endfor %}
+    {% else %}
+        <p>No films found for this genre.</p>
+    {% endif %}
+</body> 
 </html>
