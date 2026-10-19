@@ -6,23 +6,21 @@
 </head>
 <body>
     <h1>Welcome to CineBook</h1>
-    <p> select your genre to see the movies</p>
-    <form method ="POST">
-        <label for="horror">Horror:</label><br>
-        <input name ="horror" type = "text" required><br>
-        <button type="submit">select</button>
-        <label for="comedy">Comedy:</label><br>
-        <input name ="comedy" type = "text" required><br>
-        <button type="submit">select</button>
-        <label for="action">Action:</label><br>
-        <input name ="action" type = "text" required><br>
-        <button type="submit">select</button>
-        <label for="sci-fi">Sci-Fi:</label><br>
-        <input name ="sci-fi" type = "text" required><br>
-        <button type="submit">select</button>
-        <label for ="thriller">Thriller:</label><br>
-        <input name ="thriller" type = "text" required><br>
-        <button type="submit">select</button>
+    <p> select your genre to see the movies:</p>
+    <form action="{{ url_for('films', genre='horror') }}" method="get">
+        <button type="submit">horror</button>
+    </form>
+    <form action="{{ url_for('films', genre='comedy') }}" method="get">
+        <button type="submit">comedy</button>
+    </form>
+    <form action="{{ url_for('films', genre='action') }}" method="get">
+        <button type="submit">action</button>
+    </form>
+    <form action="{{ url_for('films', genre='sci-fi') }}" method="get"> 
+        <button type="submit">sci-fi</button>
+    </form>
+    <form action="{{ url_for('films', genre='thriller') }}" method="get">
+        <button type="submit">thriller</button>
     </form>
     {% if error %}
         <p>{{ error }}</p>

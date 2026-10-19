@@ -26,6 +26,7 @@ def signin():
          con.close()
       if customer:
             success = "Account logged in successfully."
+            return redirect(url_for("genre"))
       else:
        error = "Invalid username or password."
    return render_template("signin.html",error=error, success=success)
@@ -53,8 +54,14 @@ def signup():
                   cur.execute("INSERT INTO Customers (username, password) VALUES (?, ?)", (username, password))
                   con.commit()
                   success = "Account created successfully."
+                  return redirect(url_for("genre"))
                   con.close()
-      return render_template('signup.html', error=error, success=success)\
-
+      return render_template('signup.html', error=error, success=success)
+@app.route("/genre")
+def genre():
+    return render_template("genre.html")
+@app.route("/films/<genre>")
+def films(genre):
+    return render_template("films.html", genre=genre)
 if __name__ == "__main__":
     app.run(debug=True)
