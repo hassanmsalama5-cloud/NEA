@@ -181,6 +181,10 @@ cursor.execute(
     ("123456", 1)
 )
 cursor.execute(
+    "UPDATE films SET Genre = ? WHERE FilmID = ?",
+    ("Comedy", 1)
+)
+cursor.execute(
     "SELECT username FROM Customers WHERE CustomerID = ?",
     (1,)
 )

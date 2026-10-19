@@ -44,18 +44,18 @@ def signup():
          elif password != confirm_password:
                error = "Passwords do not match."
          else:
-               con = sqlite3.connect(DATABASE)
-               cur = con.cursor()
-               cur.execute("SELECT * FROM Customers WHERE username = ?",(username,))
-               existing_customer = cur.fetchone()
-               if existing_customer:
+            con = sqlite3.connect(DATABASE)
+            cur = con.cursor()
+            cur.execute("SELECT * FROM Customers WHERE username = ?",(username,))
+            existing_customer = cur.fetchone()
+            if existing_customer:
                 error = "Username already exists."
-               else:
-                  cur.execute("INSERT INTO Customers (username, password) VALUES (?, ?)", (username, password))
-                  con.commit()
-                  success = "Account created successfully."
-                  return redirect(url_for("signin"))
-                  con.close()
+            else:
+                cur.execute("INSERT INTO Customers (username, password) VALUES (?, ?)", (username, password))
+                con.commit()
+                success = "Account created successfully."
+                return "invalid genre selected",400
+            con.close()
       return render_template('signup.html', error=error, success=success)
 @app.route("/genre")
 def genre():
@@ -71,7 +71,23 @@ def films(genre):
     cur = con.cursor()
     cur.execute("SELECT * FROM Films WHERE genre = ?", (genre.title(),))
     films = cur.fetchall()
-    con.close()
+    print("Number of films found:", len(films))
+    print("Films:", [film["Title"] for film in films])
+    cur.execute("""
+    SELECT Genre, COUNT(*)
+    FROM Films
+    GROUP BY Genre
+""")
+    print("Films stored by genre:", cur.fetchall())
+    cur.execute("""
+    SELECT Genre, COUNT(*)
+    FROM Films
+    GROUP BY Genre
+""")
+
+    for row in cur.fetchall():
+        print("Genre:", row[0], "| Count:", row[1])
+        con.close()
     return render_template("films.html", genre=genre,films=films)
 if __name__ == "__main__":
     app.run(debug=True)
