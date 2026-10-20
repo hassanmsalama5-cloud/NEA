@@ -71,5 +71,21 @@ def films(genre):
     films = cur.fetchall()
     con.close()
     return render_template("films.html", genre=genre,films=films,error=error)
+@app.route('/select_screening/<film_id>/<film_name>')
+def select_screening(film_id,film_name):
+    error = None 
+    con = sqlite3.connect(DATABASE)
+    con.row_factory = sqlite3.Row
+    cursor = con.cursor()
+    cursor.execute("""
+        SELECT ScreeningID, ScreeningDate, ScreeningTime, ScreenNumber
+        FROM Screenings
+        WHERE FilmID = ?
+    """, (film_id,))
+    screenings = cursor.fetchall()
+    if len(screenings) == 0:
+        error = "No screenings available for this film."
+    con.close()
+    return render_template("screenings.html", screenings=screenings, film_name=film_name, error=error)
 if __name__ == "__main__":
     app.run(debug=True)

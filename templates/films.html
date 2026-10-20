@@ -13,13 +13,11 @@
         <h2> {{film['Title']}}</h2>
         <p>genre :{{ film['Genre'] }}</p>
         <p>age rating:{{ film['AgeRating'] }}</p>
-        <p>duration :{{ film['Duration'] }} in minutes</p>
+        <p>duration :{{ film['Duration'] }} (minutes)</p>
         <p>description :{{ film['Description'] }}</p>
-        <form action="{{ url_for('films', genre=genre) }}" method="get">
-            <input type="hidden" name="film_id" value="{{film['FilmID'] }}">
+        <form action="{{ url_for('select_screening', film_id=film['FilmID'], film_name=film['Title']) }}" method="get">
             <button type="submit">Select Film</button>
         </form>
-        
         </div>
         {% endfor %}
     {% else %}
