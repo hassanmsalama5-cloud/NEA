@@ -54,8 +54,8 @@ def signup():
                 cur.execute("INSERT INTO Customers (username, password) VALUES (?, ?)", (username, password))
                 con.commit()
                 success = "Account created successfully."
-                return "invalid genre selected",400
-            con.close()
+                con.close()
+                return redirect(url_for("signin"))
       return render_template('signup.html', error=error, success=success)
 @app.route("/genre")
 def genre():
@@ -65,7 +65,7 @@ def genre():
 def films(genre):
     valid_genres=["comedy", "action", "horror", "sci-fi", "thriller"]
     if genre not in valid_genres:
-        return redirect(url_for("genre"))
+        return "invalid genre selected",400
     con = sqlite3.connect(DATABASE)
     con.row_factory = sqlite3.Row
     cur = con.cursor()
