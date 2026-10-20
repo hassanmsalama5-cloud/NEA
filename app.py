@@ -18,17 +18,14 @@ def signin():
       else:
          con = sqlite3.connect(DATABASE)
          cur = con.cursor()
-         cur.execute(
-    "SELECT * FROM Customers WHERE username=? AND password=?",
-    (username, password)
-         )
+         cur.execute("SELECT * FROM Customers WHERE username=? AND password=?", (username, password))
          customer = cur.fetchone()
          con.close()
-      if customer:
+         if customer:
             success = "Account logged in successfully."
             return redirect(url_for("genre"))
-      else:
-       error = "Invalid username or password."
+         else:
+             error = "Invalid username or password."
    return render_template("signin.html",error=error, success=success)
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -59,19 +56,20 @@ def signup():
       return render_template('signup.html', error=error, success=success)
 @app.route("/genre")
 def genre():
-    
     return render_template("genre.html")
 @app.route("/films/<genre>")
 def films(genre):
+    error = None
     valid_genres=["comedy", "action", "horror", "sci-fi", "thriller"]
     if genre not in valid_genres:
-        return "invalid genre selected",400
+        error = "Invalid genre selected"
+        return redirect(url_for("genre"))
     con = sqlite3.connect(DATABASE)
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute("SELECT * FROM Films WHERE genre = ?", (genre.title(),))
     films = cur.fetchall()
     con.close()
-    return render_template("films.html", genre=genre,films=films)
+    return render_template("films.html", genre=genre,films=films,error=error)
 if __name__ == "__main__":
     app.run(debug=True)
