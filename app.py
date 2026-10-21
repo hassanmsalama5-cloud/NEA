@@ -87,5 +87,6 @@ def select_screening(film_id,film_name):
         error = "No screenings available for this film."
     con.close()
     return render_template("screenings.html", screenings=screenings, film_name=film_name, error=error)
+# def select_seats(screening_id):
 if __name__ == "__main__":
     app.run(debug=True)

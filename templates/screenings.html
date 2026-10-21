@@ -14,7 +14,7 @@
         <p>Time  :{{ screening['ScreeningTime']}}</p>
         <p>Screen :{{ screening['ScreenNumber']}}</p>
         </div>
-         <form action="{{ url_for('select_screening',screening_id=screening['ScreeningID']) }}" method="get">
+         <form action="{{ url_for('select_seats',screening_id=screening['ScreeningID']) }}" method="get">
             <button type="submit">Select screening</button>
         </form>
         {% endfor %}
