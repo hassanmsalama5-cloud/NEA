@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CineBook NEA & Half-Term Checklist</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6fb;--card:#fff;--ink:#182230;--muted:#64748b;--line:#e2e8f0;--accent:#3157d5;--accent-soft:#edf1ff;--done:#16845b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:#172554;color:white;padding:32px 18px}header .wrap,main{max-width:900px;margin:auto}h1{margin:0 0 8px;font-size:clamp(1.7rem,4vw,2.5rem)}header p{margin:0;color:#dbeafe}
+main{padding:22px 16px 60px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.progress-card,.section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 3px 12px #0f172a08}
+.progress-line{height:10px;background:#e8edf5;border-radius:99px;overflow:hidden;margin:12px 0 6px}.progress-fill{height:100%;width:0;background:var(--done);transition:width .2s}
+.progress-label{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:.92rem}
+h2{font-size:1.2rem;margin:0 0 12px}h3{font-size:1rem;margin:18px 0 8px;color:#334155}
+.task{display:flex;align-items:flex-start;gap:11px;padding:10px 8px;border-top:1px solid #eef2f7;cursor:pointer;border-radius:8px}
+.task:hover{background:#f8faff}.task input{width:19px;height:19px;flex:0 0 auto;margin:2px 0 0;accent-color:var(--done)}.task span{flex:1}.task input:checked+span{color:var(--muted);text-decoration:line-through}
+.tag{font-size:.75rem;color:#334155;background:var(--accent-soft);padding:3px 8px;border-radius:99px;white-space:nowrap}
+button{font:inherit;border:1px solid #cbd5e1;border-radius:10px;padding:9px 13px;background:white;color:var(--ink);cursor:pointer}button:hover{background:#f8fafc}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.danger{color:#a11b1b}
+.note{color:var(--muted);font-size:.9rem}.empty{padding:10px 0;color:var(--muted)}
+@media(min-width:700px){.task{padding:11px 10px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Half-Term & CineBook Checklist</h1><p>Tick tasks as you finish them. Your progress is saved in this browser on this device.</p></div></header>
+<main>
+<div class="progress-card">
+<div class="progress-label"><strong id="progressText">0 of 0 tasks complete</strong><span id="progressPercent">0%</span></div>
+<div class="progress-line"><div class="progress-fill" id="progressFill"></div></div>
+<div class="toolbar">
+<button class="primary" id="showAll">Show all tasks</button><button id="showRemaining">Show remaining</button><button id="showDone">Show completed</button><button id="export">Download progress</button><button class="danger" id="reset">Reset checkboxes</button>
+</div><p class="note">Progress is stored locally in your browser. It does not automatically sync between devices or browsers. Use “Download progress” to save a copy.</p>
+</div>
+<div id="checklist"></div>
+</main>
+<script>
+const groups = [
+{title:"Monday — Core foundations",category:"Revision",tasks:[
+"Maths: Arithmetic and geometric sequences","Maths: Radians — arc length, sector area, area of a triangle","Physics: Circular motion","Physics: Simple Harmonic Motion (SHM)","Computer Science: Databases","Computer Science: Boolean algebra","NEA: List unfinished development tasks and choose the first feature to complete"]},
+{title:"Tuesday — Trigonometry and thermal physics",category:"Revision",tasks:[
+"Maths: Reciprocal trigonometric functions (cosec, sec, cot)","Maths: Squared trigonometric identities","Physics: Ideal gases","Physics: Thermal physics","Computer Science: Karnaugh maps","Computer Science: Half adders and full adders","UCAS: Work on the personal statement and identify remaining application tasks"]},
+{title:"Wednesday — Mechanics and algorithms",category:"Revision",tasks:[
+"Maths: Double-angle formulae","Maths: Harmonic form","Physics: Kinematics and forces and motion","Physics: Work, energy and power","Computer Science: Data structures","Computer Science: Depth-first search and breadth-first search","NEA: Implement a feature and test it with suitable test data"]},
+{title:"Thursday — Applications and programming",category:"Revision",tasks:[
+"Maths: Solving trigonometric equations","Physics: Moments and equilibrium","Physics: Materials and Hooke's law","Computer Science: Algorithms","Computer Science: Floating-point arithmetic","Computer Science: Object-oriented programming","NEA: Write development evidence that matches the updated code"]},
+{title:"Friday — Consolidation and completion",category:"Revision",tasks:[
+"Maths: Timed mixed questions covering sequences/series, radians and trigonometry","Physics: Density, pressure, liquid pressure, upthrust and Archimedes' principle","Physics: Waves","Computer Science: Compression, encryption and hashing","Computer Science: Processor components and processor performance","NEA: Review development section and update the write-up to match the code","UCAS: Proofread the personal statement and complete remaining application tasks"]},
+{title:"Saturday — Rest",category:"Revision",tasks:["Take the day off from scheduled revision"]},
+{title:"Sunday — Review and engineering courses",category:"Revision",tasks:[
+"Maths: Redo questions you got wrong earlier in the week","Physics: Mixed exam questions on your weakest topics","Computer Science: Timed mixed questions and review the error log","Engineering course: Complete MATLAB Onramp","Engineering course: Complete Simulink Onramp","Engineering course: Complete Simscape Battery Onramp","Final review: List anything unfinished to carry into the following week"]},
+{title:"Priority 1 — Fix the seating page",category:"NEA",tasks:[
+"Fix the Jinja loops so each row displays its seats correctly.","Fix the row label, which currently references an undefined variable.","Correct the seat button HTML class attribute.","Make the seat ID attribute use the correct dictionary key.","Fix the row data passed from the Flask route to seats.html.","Load the CSS and JavaScript files in seats.html."]},
+{title:"Priority 2 — Implement seat selection",category:"NEA",tasks:[
+"Add JavaScript to static/seats.js, which is currently empty.","Make available seats selectable and deselectable.","Update the selected-seat counter automatically.","Style available, selected and booked seats differently.","Add a form and submit button to send selected seat IDs to Flask.","Validate selected seats on the server before saving a booking.","Prevent two customers from booking the same seat."]},
+{title:"Priority 3 — Complete the booking system",category:"NEA",tasks:[
+"Test sign-in/sign-up → genre → films → screening → seat selection.","Create a booking confirmation page.","Display the selected seats and screening details on confirmation.","Calculate the total ticket price if required by your design.","Display clear errors when films, screenings or seats are unavailable.","Check that genre names match those stored in the database."]},
+{title:"Priority 4 — Account security and database",category:"NEA",tasks:[
+"Hash passwords instead of storing them as plain text.","Ensure database connections close on every code path.","Handle database errors safely and keep SQL queries parameterised.","Decide whether to use Flask sessions to track logged-in customers."]},
+{title:"Priority 5 — Admin, CSS and testing",category:"NEA",tasks:[
+"Decide which admin functions are required and implement missing routes if needed.","Expand static/style.css to style the pages and seat layout.","Enable the stylesheet link in films.html.","Test empty forms, incorrect credentials, duplicate usernames and mismatched passwords.","Test invalid genres, missing screenings and unavailable seats.","Record test data, expected results, actual results and pass/fail outcomes.","Capture screenshots of the working system for NEA evidence."]},
+{title:"Priority 6 — Update the NEA write-up",category:"NEA",tasks:[
+"Update development evidence to match the code that actually works.","Include code extracts, test results, fixes and screenshots.","Align analysis and design with the implemented features.","Check success criteria against the tested system.","Write the evaluation using actual test evidence and known limitations."]},
+{title:"After every revision topic",category:"Revision",tasks:[
+"Recall key definitions, equations or methods without notes.","Attempt exam-style questions.","Mark answers and add mistakes to an error log.","Reattempt missed questions later without looking at the solution."]},
+{title:"Remember to confirm",category:"Revision",tasks:[
+"Ask the teacher whether electricity and quantum physics are included, as the source document marked them “to be confirmed”."]}
+];
+const STORAGE_KEY = "cinebook-half-term-checklist-v1";
+let completed = {};
+let filter = "all";
+try { completed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") || {}; } catch(e) { completed = {}; }
+const root = document.getElementById("checklist");
+function taskId(groupIndex,taskIndex){return groupIndex+"-"+taskIndex}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(completed))}catch(e){}}
+function updateProgress(){
+ let total=0,done=0;
+ groups.forEach((g,gi)=>g.tasks.forEach((t,ti)=>{total++;if(completed[taskId(gi,ti)])done++}));
+ document.getElementById("progressText").textContent=done+" of "+total+" tasks complete";
+ document.getElementById("progressPercent").textContent=Math.round(done/total*100)+"%";
+ document.getElementById("progressFill").style.width=(done/total*100)+"%";
+}
+function render(){
+ root.innerHTML="";
+ groups.forEach((g,gi)=>{
+ const section=document.createElement("section");section.className="section";
+ const heading=document.createElement("h2");heading.textContent=g.title;section.appendChild(heading);
+ const badge=document.createElement("span");badge.className="tag";badge.textContent=g.category;heading.appendChild(document.createTextNode(" "));heading.appendChild(badge);
+ let visible=0;
+ g.tasks.forEach((task,ti)=>{
+ const id=taskId(gi,ti),isDone=!!completed[id];
+ if(filter==="remaining"&&isDone||filter==="done"&&!isDone)return;
+ visible++;
+ const label=document.createElement("label");label.className="task";
+ const input=document.createElement("input");input.type="checkbox";input.checked=isDone;input.addEventListener("change",()=>{completed[id]=input.checked;save();render();updateProgress()});
+ const span=document.createElement("span");span.textContent=task;
+ label.appendChild(input);label.appendChild(span);section.appendChild(label);
+ });
+ if(visible>0)root.appendChild(section);
+ });
+ if(!root.children.length){root.innerHTML='<section class="section empty">Nothing in this view. Try “Show all tasks”.</section>'}
+ updateProgress();
+}
+document.getElementById("showAll").onclick=()=>{filter="all";render()};
+document.getElementById("showRemaining").onclick=()=>{filter="remaining";render()};
+document.getElementById("showDone").onclick=()=>{filter="done";render()};
+document.getElementById("reset").onclick=()=>{if(confirm("Clear all checked tasks on this browser?")){completed={};save();render()}};
+document.getElementById("export").onclick=()=>{
+ const lines=["Half-Term & CineBook Checklist",""];
+ groups.forEach((g,gi)=>{lines.push(g.title);g.tasks.forEach((t,ti)=>lines.push((completed[taskId(gi,ti)]?"[x] ":"[ ] ")+t));lines.push("")});
+ const blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="half-term-checklist-progress.txt";a.click();URL.revokeObjectURL(url);
+};
+render();
+</script>
+</body>
+</html>
