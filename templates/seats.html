@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seating Selection Chart</title>
+</head>
+<body>
+    <h1>Seating Selection Chart for {{ film_name }}</h1>
+    <h1>ScreenID: {{ screening_id }}</h1>
+     <div class="seat-chart">
+        {% for seat in seat_by_row %}
+        <div class="seat-row">
+            <span class="row-label">{{row[0].row}}</span>
+            {%for seat in row%}
+            <button class"seat{{'available' if not seat.booked else'unavailable'}}" data-seat-id="{{seat.seat_id}}" 
+            {%if seat.booked%}disabled{%endif%}>
+                {{'x'if seat.booked else '♟'}}
+            </button>
+            {%endfor%}
+        </div>
+        {%endfor%}
+     </div>
+     <p> selected seats: <span id="selected-seats">0</span></p>
+</body>
+</html>

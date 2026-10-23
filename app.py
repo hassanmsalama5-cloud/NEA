@@ -87,6 +87,38 @@ def select_screening(film_id,film_name):
         error = "No screenings available for this film."
     con.close()
     return render_template("screenings.html", screenings=screenings, film_name=film_name, error=error)
-# def select_seats(screening_id):
+@app.route('/select_seats/<screening_id>/<film_name>', methods=['GET', 'POST'])
+def select_seats(screening_id, film_name):
+    error = None
+    con = sqlite3.connect(DATABASE)
+    con.row_factory = sqlite3.Row
+    cursor = con.cursor()
+    cursor.execute("""
+        SELECT SeatID, SeatNumber, IsAvailable
+        FROM Seats
+        WHERE ScreeningID = ?
+        ORDER BY SeatNumber
+    """, (screening_id,))
+    rows = cursor.fetchall()
+    con.close()
+    seats_by_row = {}
+    for seat in rows:
+        seat_name = seat["Seatnumber"]
+        row_label = seat_name[0]
+        seats_by_row.setdefault(row_label, []).append({
+            "id": seat["SeatID"],
+             "row": row_label,
+            "number": seat_name[1:],
+            "booked": not bool(seat["IsAvailable"])
+
+        })
+    seatslist= []
+    for row in sorted(seats_by_row):
+        seatslist.append(seats_by_row[row])
+
+    if len(seats_by_row) == 0:
+        error = "No seats available for this screening."
+    
+    return render_template("seats.html", seat_by_row=seatslist, screening_id=screening_id, film_name=film_name,row=row, error=error)
 if __name__ == "__main__":
     app.run(debug=True)
