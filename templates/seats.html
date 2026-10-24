@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Seating Selection Chart</title>
+     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
 </head>
 <body>
     <h1>Seating Selection Chart for {{ film_name }}</h1>
@@ -12,7 +13,7 @@
         <div class="seat-row">
             <span class="row-label">{{row[0].row}}</span>
             {%for seat in row%}
-            <button class"seat{{'available' if not seat.booked else'unavailable'}}" data-seat-id="{{seat.seat_id}}" 
+            <button class"seat{{'available' if not seat.booked else'unavailable'}}" data-seat-id="{{seat.id}}" 
             {%if seat.booked%}disabled{%endif%}>
                 {{'x'if seat.booked else '♟'}}
             </button>
