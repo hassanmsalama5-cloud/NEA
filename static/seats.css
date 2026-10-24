@@ -1,0 +1,50 @@
+body{
+    background: #0b1d38;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding:30px;
+}
+.seat-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+.seat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.row-label {
+   width:25px;
+   font-size: 20px;
+}
+.seat{
+    width:48px;
+    height:45px;
+    border: 2px solid #65758b;
+    border-radius: 10px 10px 5px 5px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+/* Unavailable seat */
+.seat.available{
+    background:white;
+    color:#26364c;
+}
+/* Unavailable seat */
+.seat.unavailable{
+    background:#102b4d;
+    color: white;
+    border-color:#00d6c9;
+    cursor: not-allowed;
+}
+/* Selected seat */
+.seat.selected{
+    background:#1685f8;
+    color: white;
+    border-color:#65b5ff;
+    transform:scale(1.08);
+}
