@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Seating Selection Chart</title>
-     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='seats.css') }}">
 </head>
 <body>
     <h1>Seating Selection Chart for {{ film_name }}</h1>
     <h1>ScreenID: {{ screening_id }}</h1>
      <div class="seat-chart">
-        {% for seat in seat_by_row %}
+        {% for row in seat_by_row %}
         <div class="seat-row">
             <span class="row-label">{{row[0].row}}</span>
             {%for seat in row%}
-            <button class"seat{{'available' if not seat.booked else'unavailable'}}" data-seat-id="{{seat.id}}" 
+            <button class = "seat{{'available' if not seat.booked else'unavailable'}}" data-seat-id="{{seat.id}}" 
             {%if seat.booked%}disabled{%endif%}>
                 {{'x'if seat.booked else '♟'}}
             </button>
@@ -21,6 +21,16 @@
         </div>
         {%endfor%}
      </div>
-     <p> selected seats: <span id="selected-seats">0</span></p>
+     <p> selected seats: <span id="selected-count">0</span></p>
+     <script>
+     const seats = document.querySelectorAll('.seat.available');
+     const count  = document.getElementById('selected-count');
+     seats.forEach(seat=>{
+        seat.addEventListener('click',()=>{
+            seat.classList.toggle('selected');
+            count.textContent = document.querySelectorAll('.seat.selected').length;
+        })
+     })
+        </script>
 </body>
 </html>

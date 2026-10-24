@@ -119,6 +119,6 @@ def select_seats(screening_id, film_name):
     if len(seats_by_row) == 0:
         error = "No seats available for this screening."
     
-    return render_template("seats.html", seat_by_row=seatslist, screening_id=screening_id, film_name=film_name,row=row, error=error)
+    return render_template("seats.html", seat_by_row=seatslist, screening_id=screening_id, film_name=film_name,error=error)
 if __name__ == "__main__":
     app.run(debug=True)
