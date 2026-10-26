@@ -109,7 +109,7 @@ def select_seats(screening_id, film_name):
             "id": seat["SeatID"],
              "row": row_label,
             "number": seat_name[1:],
-            "booked": not bool(seat["IsAvailable"])
+            "booked": not bool(seat["isavailable"])
 
         })
     seatslist= []

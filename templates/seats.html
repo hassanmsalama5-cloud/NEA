@@ -13,7 +13,7 @@
         <div class="seat-row">
             <span class="row-label">{{row[0].row}}</span>
             {%for seat in row%}
-            <button class = "seat{{'available' if not seat.booked else'unavailable'}}" data-seat-id="{{seat.id}}" 
+            <button class="seat {{ 'available' if  not seat.booked else 'unavailable' }}" data-seat-id="{{seat.id}}" 
             {%if seat.booked%}disabled{%endif%}>
                 {{'x'if seat.booked else '♟'}}
             </button>
@@ -21,10 +21,10 @@
         </div>
         {%endfor%}
      </div>
-     <p> selected seats: <span id="selected-count">0</span></p>
+     <p> selected seats: <span id="selected-seats">0</span></p>
      <script>
      const seats = document.querySelectorAll('.seat.available');
-     const count  = document.getElementById('selected-count');
+     const count  = document.getElementById('selected-seats');
      seats.forEach(seat=>{
         seat.addEventListener('click',()=>{
             seat.classList.toggle('selected');
