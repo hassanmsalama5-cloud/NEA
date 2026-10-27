@@ -25,7 +25,7 @@ def signin():
          con.close()
          if customer:
             success = "Account logged in successfully."
-            session = ["customer_id"] = customer[0]
+            session["customer_id"] = customer[0]
             return redirect(url_for("genre"))
          else:
              error = "Invalid username or password."
@@ -123,11 +123,11 @@ def select_seats(screening_id, film_name):
         error = "No seats available for this screening."
     
     return render_template("seats.html", seat_by_row=seatslist, screening_id=screening_id, film_name=film_name,error=error)
-@app.route("/confirm_booking", methods=["POST"])
+@app.route("/confirm_booking", methods=['POST'])
 def confirm_booking():
     customer_id = session.get("customer_id")
     screening_id = request.form.get("screening_id", type=int)
-    seat_ids = request.form.getList("seat_ids")
+    seat_ids = request.form.getlist("seat_ids")
     if customer_id is None:
         return redirect(url_for("signin"))
     if not screening_id or not seat_ids:
@@ -148,7 +148,7 @@ def confirm_booking():
             SELECT screeningID
             from Screenings
             where ScreeningID = ?
-        """,(screening_id))
+        """,(screening_id,))
         if cur.fetchone() is None:
             abort(400,"Invalid screening.")
         placeholders = ",".join("?" for _ in seat_ids)
@@ -163,7 +163,7 @@ def confirm_booking():
         available_ids = {row[0] for row in cur.fetchall()}
 
         if available_ids != set(seat_ids):
-            (409,"One or more seats are no longer available.")
+            abort(409,"One or more seats are no longer available.")
         cur.execute("""
             INSERT INTO Bookings
                 (customerID,screeningID,bookingDate,numberOfTickets,TotalPrice)
@@ -171,7 +171,7 @@ def confirm_booking():
         """,(
             customer_id,
             screening_id,
-            date.today.isoformat(),
+            date.today().isoformat(),
             len(seat_ids),
             total_price,
         ))
@@ -182,10 +182,23 @@ def confirm_booking():
                 INSERT INTO BookingSeats(bookingID,seatID)
                 VALUES(?,?)
             """,(booking_id,seat_id))
+        cur.execute(f"""
+                    UPDATE Seats 
+                    set isavailable = 0 
+                    WHERE ScreeningID=?
+                    AND isavailable = 1
+                    AND SeatID IN({placeholders})
+                """,[screening_id] + seat_ids)
+        if cur.rowcount != len(seat_ids):
+            abort(409,"Seat availability changed.")
+        con.commit()
+        return redirect (url_for("confirmation",booking_id=booking_id))
+    except Exception:
+        con.rollback()
+        raise
+    finally:
+        con.close()
+    # def confirmation():
 
-        
-    
-
-    return 
 if __name__ == "__main__":
     app.run(debug=True)

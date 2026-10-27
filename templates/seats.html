@@ -25,7 +25,7 @@
     </div> 
      <p> selected seats: <span id="selected-seats">0</span></p>
      <div id = "selected-seat-inputs"></div>
-     <buttton type ="submit">Confirm Booking</buttton>
+     <button type ="submit">Confirm Booking</buttton>
     </form>
      <script>
      const seats = document.querySelectorAll('.seat.available');
@@ -36,12 +36,12 @@
             seat.classList.toggle('selected');
             selectedInputs.innerHTML = '';
             document.querySelectorAll('.seat.selected').forEach(selected=>{
-                const input = document.createElememt('input');
+                const input = document.createElement('input');
                 input.type = 'hidden';
                 input.name ='seat_ids';
                 input.value = selected.dataset.seatId;
 
-                selectedInput.appendChild(input);
+                selectedInputs.appendChild(input);
             })
             count.textContent = document.querySelectorAll('.seat.selected').length;
         })

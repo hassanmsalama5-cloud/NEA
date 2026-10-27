@@ -176,10 +176,10 @@ CREATE TABLE IF NOT EXISTS admins(
     password TEXT NOT NULL
 )
 """)
-cursor.execute(
-    "UPDATE Customers SET password = ? WHERE CustomerID = ?",
-    ("123456", 1)
-)
+# cursor.execute(
+#     "UPDATE Customers SET password = ? WHERE CustomerID = ?",
+#     ("123456", 1)
+# )
 cursor.execute(
     "UPDATE films SET Genre = ? WHERE FilmID = ?",
     ("Comedy", 1)
