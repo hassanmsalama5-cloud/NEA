@@ -1,7 +1,9 @@
 import sqlite3
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,session,abort
+from datetime import date 
 # from werkzeug.security import check_password_hash
 app = Flask(__name__)
+app.secret_key = "1932ADFV"
 DATABASE = "cinema.db"
 @app.route("/")
 def home():
@@ -23,6 +25,7 @@ def signin():
          con.close()
          if customer:
             success = "Account logged in successfully."
+            session = ["customer_id"] = customer[0]
             return redirect(url_for("genre"))
          else:
              error = "Invalid username or password."
@@ -120,5 +123,69 @@ def select_seats(screening_id, film_name):
         error = "No seats available for this screening."
     
     return render_template("seats.html", seat_by_row=seatslist, screening_id=screening_id, film_name=film_name,error=error)
+@app.route("/confirm_booking", methods=["POST"])
+def confirm_booking():
+    customer_id = session.get("customer_id")
+    screening_id = request.form.get("screening_id", type=int)
+    seat_ids = request.form.getList("seat_ids")
+    if customer_id is None:
+        return redirect(url_for("signin"))
+    if not screening_id or not seat_ids:
+        abort(400,"select a screening and at least on seat")
+    try:
+        seat_ids = [int(seat_id) for seat_id in seat_ids]
+    except ValueError:
+        abort(400,"invalid seat selection")
+    if len(seat_ids) != len(set(seat_ids)):
+        abort(400,"duplicate seats selected.")
+    total_price = len(seat_ids) * 10.00
+    con = sqlite3.connect(DATABASE)
+    con.execute("PRAGMA foreign_keys = ON")
+    try:
+        cur = con.cursor()
+        cur.execute("BEGIN IMMEDIATE")
+        cur.execute("""
+            SELECT screeningID
+            from Screenings
+            where ScreeningID = ?
+        """,(screening_id))
+        if cur.fetchone() is None:
+            abort(400,"Invalid screening.")
+        placeholders = ",".join("?" for _ in seat_ids)
+        cur.execute(f"""
+            SELECT SeatID
+            FROM Seats
+            WHERE ScreeningID=?
+            AND isavailable = 1
+            AND SeatID IN({placeholders})
+        """,[screening_id] + seat_ids)
+
+        available_ids = {row[0] for row in cur.fetchall()}
+
+        if available_ids != set(seat_ids):
+            (409,"One or more seats are no longer available.")
+        cur.execute("""
+            INSERT INTO Bookings
+                (customerID,screeningID,bookingDate,numberOfTickets,TotalPrice)
+            Values(?,?,?,?,?)
+        """,(
+            customer_id,
+            screening_id,
+            date.today.isoformat(),
+            len(seat_ids),
+            total_price,
+        ))
+
+        booking_id = cur.lastrowid
+        for seat_id in seat_ids:
+            cur.execute("""
+                INSERT INTO BookingSeats(bookingID,seatID)
+                VALUES(?,?)
+            """,(booking_id,seat_id))
+
+        
+    
+
+    return 
 if __name__ == "__main__":
     app.run(debug=True)

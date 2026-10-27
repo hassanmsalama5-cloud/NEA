@@ -8,6 +8,8 @@
 <body>
     <h1>Seating Selection Chart for {{ film_name }}</h1>
     <h1>ScreenID: {{ screening_id }}</h1>
+    <form action ="{{url_for('confirm_booking')}}" method="POST" id="booking-form">
+        <input type ="hidden" name ="screening_id" value="{{screening_id}}">
      <div class="seat-chart">
         {% for row in seat_by_row %}
         <div class="seat-row">
@@ -20,14 +22,27 @@
             {%endfor%}
         </div>
         {%endfor%}
-     </div>
+    </div> 
      <p> selected seats: <span id="selected-seats">0</span></p>
+     <div id = "selected-seat-inputs"></div>
+     <buttton type ="submit">Confirm Booking</buttton>
+    </form>
      <script>
      const seats = document.querySelectorAll('.seat.available');
      const count  = document.getElementById('selected-seats');
+     const selectedInputs = document.getElementById('selected-seat-inputs');
      seats.forEach(seat=>{
         seat.addEventListener('click',()=>{
             seat.classList.toggle('selected');
+            selectedInputs.innerHTML = '';
+            document.querySelectorAll('.seat.selected').forEach(selected=>{
+                const input = document.createElememt('input');
+                input.type = 'hidden';
+                input.name ='seat_ids';
+                input.value = selected.dataset.seatId;
+
+                selectedInput.appendChild(input);
+            })
             count.textContent = document.querySelectorAll('.seat.selected').length;
         })
      })
