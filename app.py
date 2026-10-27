@@ -192,7 +192,7 @@ def confirm_booking():
         if cur.rowcount != len(seat_ids):
             abort(409,"Seat availability changed.")
         con.commit()
-        return redirect (url_for("confirmation",booking_id=booking_id))
+        return render_template("confirmation.html",booking_id=booking_id)
     except Exception:
         con.rollback()
         raise
