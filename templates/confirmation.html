@@ -3,20 +3,26 @@
     <head>
         <meta charset="UTF-8">
         <title> Booking  Confirmation </title>
-        <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+        <link rel="stylesheet" href="{{url_for('static',filename='confirmation.css')}}">
     </head>
 <body>
-    <h1>Booking Confirmed!</h1>
-    <p>Your booking has been saved successfully.</p>
+    <main class="confirmation-container">
+        <div class="success-icon">✓</div>
+        <h1>Booking Confirmed!</h1>
+        <p class ="subtitle">Your booking has been saved successfully.</p>
+        <section class="booking_details">
+            <h2>Booking Details</h2>
+            <p>Booking reference: {{booking.bookingID}}</p>
+            <p>Film:{{booking.title}}</p>
+            <p>Date:{{booking.screeningDate}}</p>
+            <p>time:{{booking.screeningTime}}</p>
+            <p>Screen:{{booking.screenNumber}}</p>
+            <p>Seats:{{seats| join(',')}}</p>
+            <p>Number of tickets:{{booking.numberOfTickets}}</p>
+            <p>Total price:£{{"%.2f"|format(booking.totalPrice)}}</p>
+        </section>
+             <a class="return-link" href="{{url_for('genre')}}">Return to films</a>
 
-    <h2>Booking Details</h2>
-    <p>Booking reference: {{booking.bookingID}}</p>
-    <p>Film:{{booking.title}}</p>
-    <p>Date:{{booking.screeningDate}}</p>
-    <p>time:{{booking.screenNumber}}</p>
-    <p>Seats:{{seats| join(',')}}</p>
-    <p>Number of tickets:{{booking.numberOfTickets}}</p>
-    <p>Total price:£{{"%.2f"|format(booking.totalPrice)}}</p>
-    <a href="{{url_for('genre')}}">Return to films</a>
+    </main>
 </body>
 </html>

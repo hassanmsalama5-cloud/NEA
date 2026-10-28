@@ -231,7 +231,7 @@ def confirmation(booking_id):
             Join seats ON  BookingSeats.seatID = seats.seatID
             WHERE BookingSeats.bookingID = ?
             ORDER BY seats.seatNumber
-        """,(booking_id))
+        """,(booking_id,))
 
         seats = [row["seatNumber"]for row in cur.fetchall()]
 

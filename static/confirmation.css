@@ -1,0 +1,56 @@
+body{
+    margin:0;
+    padding:40px 20px;
+    background:#0b1d38;
+    color:#26364c;
+    font-family:arial,sans-serif;
+}
+.confirmation-container{
+    max-width:650px;
+    margin:0 auto;
+    padding:35px;
+    background:white;
+    border-radius: 16px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.2);
+}
+.success-icon{
+    width:60px;
+    height:60px;
+    margin:0 auto 15px;
+    border-radius: 50%;
+    background:#d1fae5;
+    color:#047857;
+    font-size:42px;
+    text-align:center;
+    line-height:60px;
+}
+h1{
+    text-align:center;
+    color:#64748b;
+}
+.booking-details{
+    margin-top:30px;
+    padding:20px;
+    background:#f1f5f9;
+    border-radius:10px;
+}
+.booking-details h2{
+    margin-top:0;
+}
+.booking-details p{
+    padding-bottom:12px;
+    border-bottom:1px solid #dbe2ea;
+}
+.return-link{
+    display:block;
+    margin-top:25px;
+    padding:14px;
+    background:#1685f8;
+    color:white;
+    text-align:center;
+    text-decoration:none;
+    border-radius: 8px;
+}
+.return-link:hover{
+    background:#0868cc;
+}
