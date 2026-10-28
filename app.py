@@ -138,7 +138,7 @@ def confirm_booking():
         abort(400,"invalid seat selection")
     if len(seat_ids) != len(set(seat_ids)):
         abort(400,"duplicate seats selected.")
-    total_price = len(seat_ids) * 10.00
+    total_price = len(seat_ids) * 10.99
     con = sqlite3.connect(DATABASE)
     con.execute("PRAGMA foreign_keys = ON")
     try:
@@ -166,7 +166,7 @@ def confirm_booking():
             abort(409,"One or more seats are no longer available.")
         cur.execute("""
             INSERT INTO Bookings
-                (customerID,screeningID,bookingDate,numberOfTickets,TotalPrice)
+                (customerID,ScreeningID,bookingDate,numberOfTickets,TotalPrice)
             Values(?,?,?,?,?)
         """,(
             customer_id,
@@ -192,13 +192,53 @@ def confirm_booking():
         if cur.rowcount != len(seat_ids):
             abort(409,"Seat availability changed.")
         con.commit()
-        return render_template("confirmation.html",booking_id=booking_id)
+        return redirect(url_for("confirmation",booking_id=booking_id))
     except Exception:
         con.rollback()
         raise
     finally:
         con.close()
-    # def confirmation():
+
+@app.route("/confirmation/<int:booking_id>")
+def confirmation(booking_id):
+    con = sqlite3.connect(DATABASE)
+    con.row_factory= sqlite3.Row
+
+    try:
+        cur = con.cursor()
+        cur.execute("""
+            SELECT B.bookingID,B.bookingDate,
+                   B.numberOfTickets,B.totalPrice,
+                   S.ScreeningDate,S.ScreeningTime,
+                   S.ScreenNumber,F.title
+            From bookings B
+            Join Screenings S
+                ON B.ScreeningID = S.ScreeningID
+            Join Films f 
+                ON S.filmID = F.filmID
+            WHERE B.bookingID=?
+            AND B.customerID =?
+    """,(booking_id,session.get("customer_id")))
+        
+        booking = cur.fetchone()
+
+        if booking is None:
+            abort(404)
+
+        cur.execute("""
+            SELECT seats.seatNumber
+            FROM BookingSeats
+            Join seats ON  BookingSeats.seatID = seats.seatID
+            WHERE BookingSeats.bookingID = ?
+            ORDER BY seats.seatNumber
+        """,(booking_id))
+
+        seats = [row["seatNumber"]for row in cur.fetchall()]
+
+        return render_template("confirmation.html",booking=booking,seats=seats)
+    finally:
+        con.close()
+
 
 if __name__ == "__main__":
     app.run(debug=True)

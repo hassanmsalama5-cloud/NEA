@@ -15,7 +15,7 @@
         <div class="seat-row">
             <span class="row-label">{{row[0].row}}</span>
             {%for seat in row%}
-            <button class="seat {{ 'available' if  not seat.booked else 'unavailable' }}" data-seat-id="{{seat.id}}" 
+            <button type ="button" class="seat {{ 'available' if  not seat.booked else 'unavailable' }}" data-seat-id="{{seat.id}}" 
             {%if seat.booked%}disabled{%endif%}>
                 {{'x'if seat.booked else '♟'}}
             </button>
@@ -25,7 +25,7 @@
     </div> 
      <p> selected seats: <span id="selected-seats">0</span></p>
      <div id = "selected-seat-inputs"></div>
-     <button type ="submit">Confirm Booking</buttton>
+     <button type ="submit">Confirm Booking</button>
     </form>
      <script>
      const seats = document.querySelectorAll('.seat.available');
