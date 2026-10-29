@@ -42,7 +42,7 @@ input{
 button{
     width:100%;
     padding:12px;
-    background-color: #3b82f6;
+    background-color:#f5c518;
     border:none;
     border-radius:6px;
     font-size: 16px;
@@ -50,7 +50,7 @@ button{
     cursor:pointer;
 }
 button:hover{
-    background-color: #60a5fa;
+    background-color:#ffd84d;
 }
 form p{
     text-align:center;
@@ -58,8 +58,8 @@ form p{
     margin-bottom:0;
 }
 a{
-    color: #60a5fa;
+    color:#f5c518;
 }
 a:hover{
-    color: #60a5fa;
+    color:#f5c518;
 }
