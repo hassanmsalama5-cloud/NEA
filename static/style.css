@@ -23,13 +23,13 @@ body > p {
     margin-bottom:25px;
 }
 form{
-    background-color: 25px;
+    background-color:#1c2733;
     width:100%;
     max-width:400px;
     padding:30px;
     border-radius:12px;
     border:1px solid #354454;
-    box-shadow:0 8px 24px rgba(0,0,0.0.3);
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);
 }
 label{
     display:block;
@@ -40,7 +40,9 @@ input{
     width:100%;
     padding: 12px;
     border:1px solid #667585;
-    border-radius: #ffffff;
+    border-radius:6px;
+    background-color: #ffffff;
+    margin-bottom:18px;
     color:#101820;
     font-size: 16px;
 }
@@ -66,5 +68,29 @@ a{
     color:#f5c518;
 }
 a:hover{
-    color:#f5c518;
+    color:#ffd84d;
+}
+.film-card,
+.screening-card {
+    background-color:#1c2733;
+    width:100%;
+    max-width:600px;
+    padding:25px;
+    margin:15px 0;
+    border:1px solid #354454;
+    border-radius:12px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);
+}
+.film-card p,
+.screening-card p{
+    line-height:1.6;
+}
+.film-card form,
+.screening-card form{
+    max-width: none;
+    padding: 0;
+    margin-top: 15px;
+    border:none;
+    box-shadow:none;
+    background-color: transparent;
 }

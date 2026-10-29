@@ -3,13 +3,13 @@
 <head>  
     <meta charset="UTF-8">
     <title>CineBook-FILMS</title>
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>{{ genre.title() }} Films</h1>
     {%if films %}
         {% for film in films %}
-        <div>
+        <div class ="film-card">
         <h2> {{film['Title']}}</h2>
         <p>genre :{{ film['Genre'] }}</p>
         <p>age rating:{{ film['AgeRating'] }}</p>
