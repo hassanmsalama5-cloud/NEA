@@ -249,6 +249,7 @@ def confirmation(booking_id):
 def admin_signin():
     error = None
     success = None
+
     if request.method == "POST":
         username = request.form.get("username","").strip()
         password = request.form.get("password","").strip()
@@ -265,16 +266,16 @@ def admin_signin():
         """,(username,))
             admin = cur.fetchone()
             con.close()
-        if  admin and admin[2] == password:
-            success = "admin logged in successfully"
-            session["admin_id"] = admin[0]
-            return redirect (url_for("admin_dashboard"))
-        else:
-            error = "Invalid username or password."
+            if  admin and admin[2] == password:
+                success = "admin logged in successfully"
+                session["admin_id"] = admin[0]
+                return redirect (url_for("admin_dashboard"))
+            else:
+                error = "Invalid username or password."
     return render_template("admin_signin.html",error=error,success = success)
 @app.route("/admin_dashboard")
 def admin_dashboard():
-        return redirect(url_for("genre"))
+        return redirect(url_for("admin_signin"))
 @app.route("/admin_logout")
 def admin_logout():
     session.pop("admin_id",None)
