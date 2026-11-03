@@ -5,6 +5,7 @@ from datetime import date
 app = Flask(__name__)
 app.secret_key = "1932ADFV"
 DATABASE = "cinema.db"
+#CUSTOMER
 @app.route("/")
 def home():
     return redirect(url_for("signin"))
@@ -32,6 +33,7 @@ def signin():
    return render_template("signin.html",error=error, success=success)
 
 @app.route("/signup", methods=["GET", "POST"])
+
 def signup():
       error = None
       success = None
@@ -57,9 +59,11 @@ def signup():
                 con.close()
                 return redirect(url_for("signin"))
       return render_template('signup.html', error=error, success=success)
+
 @app.route("/genre")
 def genre():
     return render_template("genre.html")
+
 @app.route("/films/<genre>")
 def films(genre):
     error = None
@@ -90,6 +94,7 @@ def select_screening(film_id,film_name):
         error = "No screenings available for this film."
     con.close()
     return render_template("screenings.html", screenings=screenings, film_name=film_name, error=error)
+
 @app.route('/select_seats/<screening_id>/<film_name>', methods=['GET', 'POST'])
 def select_seats(screening_id, film_name):
     error = None
@@ -123,6 +128,7 @@ def select_seats(screening_id, film_name):
         error = "No seats available for this screening."
     
     return render_template("seats.html", seat_by_row=seatslist, screening_id=screening_id, film_name=film_name,error=error)
+
 @app.route("/confirm_booking", methods=['POST'])
 def confirm_booking():
     customer_id = session.get("customer_id")
@@ -131,7 +137,7 @@ def confirm_booking():
     if customer_id is None:
         return redirect(url_for("signin"))
     if not screening_id or not seat_ids:
-        abort(400,"select a screening and at least on seat")
+        abort(400,"select a screening and at least one seat")
     try:
         seat_ids = [int(seat_id) for seat_id in seat_ids]
     except ValueError:
@@ -238,7 +244,40 @@ def confirmation(booking_id):
         return render_template("confirmation.html",booking=booking,seats=seats)
     finally:
         con.close()
+#ADMINISTRATOR SIDE 
+@app.route("/admin_signin",methods=["POST","GET"])
+def admin_signin():
+    error = None
+    success = None
+    if request.method == "POST":
+        username = request.form.get("username","").strip()
+        password = request.form.get("password","").strip()
 
-
+        if not username or  not password:
+            error = "please complete all fields"
+        else:
+            con = sqlite3.connect(DATABASE)
+            cur = con.cursor()
+            cur.execute("""
+                SElECT AdminID,username,password
+                FROM admins
+                WHERE username =  ?
+        """,(username,))
+            admin = cur.fetchone()
+            con.close()
+        if  admin and admin[2] == password:
+            success = "admin logged in successfully"
+            session["admin_id"] = admin[0]
+            return redirect (url_for("admin_dashboard"))
+        else:
+            error = "Invalid username or password."
+    return render_template("admin_signin.html",error=error,success = success)
+@app.route("/admin_dashboard")
+def admin_dashboard():
+        return redirect(url_for("genre"))
+@app.route("/admin_logout")
+def admin_logout():
+    session.pop("admin_id",None)
+    return redirect(url_for("admin_signin"))
 if __name__ == "__main__":
     app.run(debug=True)
