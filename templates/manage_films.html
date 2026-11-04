@@ -8,14 +8,14 @@
     <body>
     {%for film in films%}
     <div class = "film-card">
-            <h3>{{film['title']}}</h3>
-            <p>genre:{{film['genre']}}</p>§
-            <p>age rating:{{film['age_rating']}}</p>
-            <p>duration:{{film['duration']}} in minutes </p>
+            <h3>{{film['Title']}}</h3>
+            <p>genre:{{film['genre']}}</p>
+            <p>age rating:{{film['AgeRating']}}</p>
+            <p>duration:{{film['Duration']}} in minutes </p>
             <p>description:{{film['description']}}</p>
-            <a href = "{{url_for('edit_film',film_id=film['id'])}}">Edit</a>
+            <a href = "{{url_for('edit_film',film_id=film['filmID'])}}">Edit</a>
         
-        <form method ="POST" action ="{{url_for('delete_film',film_id=film['id'])}}" style="display: inline;">
+        <form method ="POST" action ="{{url_for('delete_film',film_id=film['filmID'])}}" style="display: inline;">
             <button type="submit">Delete</button>
         </form>
     </div>

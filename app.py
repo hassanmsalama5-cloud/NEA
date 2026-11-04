@@ -337,9 +337,11 @@ def manage_bookings():
     f.title,
     b.bookingDate,
     S.ScreeningDate,
+    S.ScreeningTime,
+    S.ScreenNumber,
     b.numberOfTickets,
     b.totalPrice
-    FROM booking b 
+    FROM bookings b 
     JOIN Customers C 
     ON b.customerID = C.customerID
     JOIN Screenings S
