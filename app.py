@@ -348,7 +348,7 @@ def manage_bookings():
     ON S.filmID = f.filmID 
     ORDER BY b.bookingDate DESC
 """)
-    bookings = cur.fetchall()
+    bookings = [dict(row) for row in cur.fetchall()]
     con.close()
     return render_template("manage_bookings.html",bookings=bookings)
 @app.route("/admin_logout")
