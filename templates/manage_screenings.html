@@ -13,8 +13,8 @@
             <p>screening date:{{screening ['ScreeningDate']}}</p>
             <p>screening time:{{screening['ScreeningTime']}}</p>
             <p>screen number:{{screening['ScreenNumber']}}</p>
-            <a href = "{{url_for('edit_screening',screening_id=screening['screeningID'])}}">Edit</a>
-            <form method ="POST" action ="{{url_for('delete_screening',screening_id=screening['screeningID'])}}" style ="display:inline">
+            <a href = "{{url_for('edit_screening',screening_id=screening['ScreeningID'])}}">Edit</a>
+            <form method ="POST" action ="{{url_for('delete_screening',screening_id=screening['ScreeningID'])}}" style ="display:inline">
                 <button type="submit">Delete</button>
             </form>
         </div>
