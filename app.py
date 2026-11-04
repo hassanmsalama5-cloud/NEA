@@ -320,7 +320,7 @@ def manage_screenings():
     ON S.FilmID = f.FilmID
     ORDER BY S.ScreeningDate,S.ScreeningTIME
     """)
-    screenings = cur.fetchall()
+    screenings =  [dict(row) for row in cur.fetchall()]
     con.close()
     return render_template("manage_screenings.html", screenings=screenings)
 @app.route("/manage_bookings")
