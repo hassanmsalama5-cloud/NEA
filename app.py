@@ -340,7 +340,7 @@ def manage_bookings():
     b.numberOfTickets,
     b.totalPrice
     FROM booking b 
-    JOIN Customer C 
+    JOIN Customers C 
     ON b.customerID = C.customerID
     JOIN Screenings S
     ON b.screeningID = S.ScreeningID
