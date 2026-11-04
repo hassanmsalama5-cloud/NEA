@@ -59,7 +59,6 @@ def signup():
                 con.close()
                 return redirect(url_for("signin"))
       return render_template('signup.html', error=error, success=success)
-
 @app.route("/genre")
 def genre():
     return render_template("genre.html")
@@ -275,7 +274,83 @@ def admin_signin():
     return render_template("admin_signin.html",error=error,success = success)
 @app.route("/admin_dashboard")
 def admin_dashboard():
+    if "admin_id" not in session:
         return redirect(url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+
+    cur.execute("SELECT COUNT (*) FROM Films")
+    total_films = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT (*) FROM Screenings")
+    total_screenings = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT (*) FROM Bookings")
+    total_bookings = cur.fetchone()[0]
+
+    con.close()
+    return render_template("admin_dashboard.html", total_films=total_films, total_screenings=total_screenings, total_bookings=total_bookings)
+@app.route("/manage_films")
+def manage_films():
+    if "admin_id" not in session:
+        return redirect(url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("SELECT * FROM Films ORDER BY title")
+    films = [dict(row) for row in cur.fetchall()]
+    con.close()
+    return render_template("manage_films.html", films=films)
+@app.route("/manage_screenings")
+def manage_screenings():
+    if "admin_id" not in session:
+        return redirect(url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("""
+    SELECT 
+    S.ScreeningID,
+    f.Title,
+    S.ScreeningDate,
+    S.ScreeningTime,
+    S.ScreenNumber
+    FROM Screenings S
+    JOIN films f 
+    ON S.FilmID = f.FilmID
+    ORDER BY S.ScreeningDate,S.ScreeningTIME
+    """)
+    screenings = cur.fetchall()
+    con.close()
+    return render_template("manage_screenings.html", screenings=screenings)
+@app.route("/manage_bookings")
+def manage_bookings():
+    if "admin_id" not in session:
+        return redirect(url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    con.row_factory = sqlite3.Row
+    cur = con.cursor ()
+    cur.execute("""
+    SELECT
+    b.bookingID,
+    C.username,
+    f.title,
+    b.bookingDate,
+    S.ScreeningDate,
+    b.numberOfTickets,
+    b.totalPrice
+    FROM booking b 
+    JOIN Customer C 
+    ON b.customerID = C.customerID
+    JOIN Screenings S
+    ON b.screeningID = S.ScreeningID
+    JOIN films f 
+    ON S.filmID = f.filmID 
+    ORDER BY b.bookingDate DESC
+""")
+    bookings = cur.fetchall()
+    con.close()
+    return render_template("manage_bookings.html",bookings=bookings)
 @app.route("/admin_logout")
 def admin_logout():
     session.pop("admin_id",None)

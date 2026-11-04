@@ -2,11 +2,29 @@
 <html lang = "en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+    <title> CineBook Admin Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Admin Dashboard</h1>
-    <p>Welcome, Admin!</p>
+    <h1>CineBook Administration</h1>
+    <h2>Dashboard overview</h2>
+<div class ="dashboard">
+    <div class ="card">
+        <h3>Total Films</h3>
+        <p>{{ total_films }}</p>
+        <a href="{{url_for('manage_films')}}">Manage Films</a>
+    </div>
+    <div class ="card">
+        <h3>Total Screenings</h3>
+        <p>{{ total_screenings }}</p>
+        <a href="{{url_for('manage_screenings')}}">Manage Screenings</a>
+    </div>
+    <div class ="card">
+        <h3>Total Bookings</h3>
+        <p>{{ total_bookings }}</p>
+        <a href="{{url_for('manage_bookings')}}">Manage Bookings</a> 
+    </div>
+    <a href="{{ url_for('admin_logout') }}">Logout</a>
+</div>
 </body>
 </html>
