@@ -9,7 +9,7 @@
         <h1>Manage Screenings</h1>
         {% for screening in screenings %}
         <div class ="screening-card ">
-            <h3>{{screening['Title']}}</h3>
+            <h3> Film title: {{screening['Title']}}</h3>
             <p>screening date:{{screening ['ScreeningDate']}}</p>
             <p>screening time:{{screening['ScreeningTime']}}</p>
             <p>screen number:{{screening['ScreenNumber']}}</p>
@@ -17,7 +17,11 @@
             <form method ="POST" action ="{{url_for('delete_screening',screening_id=screening['ScreeningID'])}}" style ="display:inline">
                 <button type="submit">Delete</button>
             </form>
+            <form method ="POST" action ="{{url_for('reset_seats',screening_id = screening['ScreeningID'])}}" style ="display:inline">
+                <button type="submit">Reset Seats</button>
+            </form>
         </div>
         {% endfor %}
+         <a href="{{url_for('admin_dashboard')}}">Back to Admin Dashboard</a>
     </body>
 </html>

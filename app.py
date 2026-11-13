@@ -73,7 +73,7 @@ def films(genre):
     con = sqlite3.connect(DATABASE)
     con.row_factory = sqlite3.Row
     cur = con.cursor()
-    cur.execute("SELECT * FROM Films WHERE genre = ?", (genre.title(),))
+    cur.execute("SELECT * FROM Films WHERE genre = ? AND IsActive = 1", (genre.title(),))
     films = cur.fetchall()
     con.close()
     return render_template("films.html", genre=genre,films=films,error=error)
@@ -340,7 +340,7 @@ def manage_bookings():
     S.ScreeningTime,
     S.ScreenNumber,
     b.numberOfTickets,
-    b.totalPrice
+    b.TotalPrice
     FROM bookings b 
     JOIN Customers C 
     ON b.customerID = C.customerID
@@ -353,6 +353,156 @@ def manage_bookings():
     bookings = [dict(row) for row in cur.fetchall()]
     con.close()
     return render_template("manage_bookings.html",bookings=bookings)
+@app.route("/archive_film/<int:film_id>",methods=["POST"])
+def archive_film(film_id):
+    error = None
+    if "admin_id" not in session:
+        return redirect(url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    try:
+        cur = con.cursor()
+        cur.execute("UPDATE Films SET IsActive = 0 WHERE FilmID = ?", (film_id,))
+        con.commit()
+        con.close()
+        return redirect(url_for("manage_films"))
+    except Exception:
+        con.rollback()
+        raise
+    finally:
+        con.close()
+@app.route("/edit_film/<int:film_id>",methods=["GET","POST"])
+def edit_film(film_id):
+    if not "admin_id" in session:
+        return redirect(url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    try:
+        cur.execute("SELECT* FROM films where filmID = ?",(film_id,))
+        film = cur.fetchone()
+        if film is None:
+            abort(404)
+        if request.method == "POST":
+            title = request.form.get("Title","").strip()
+            genre = request.form.get("genre","").strip()
+            age_rating = request.form.get("ageRating","").strip()
+            duration = request.form.get("duration","").strip()
+            description = request.form.get("description","").strip()
+            if not title or not genre or not age_rating or not duration or not description:
+                return render_template(
+                    "edit_film.html",
+                    film = film, 
+                    error = "Please complete all fields."
+                )
+            try: 
+                duration = int(duration)
+                if duration <=0:
+                 raise ValueError
+            except ValueError:
+                return render_template(
+                    "edit_film.html",
+                    film = film,
+                    error ="Duration must be a positive integer."
+                )
+            cur.execute("""
+                UPDATE films 
+                SET Title = ?,
+                    genre = ?,
+                    AgeRating =?,
+                    Duration =?,
+                    description = ?
+                WHERE FilmID = ?
+                """, (title,
+                      genre,
+                      age_rating,
+                      duration, 
+                      description, 
+                      film_id
+                    ))
+            con.commit()
+            return redirect(url_for("manage_films"))
+        return render_template("edit_film.html",film=film)
+    finally:
+        con.close()
+@app.route("/edit_screening/<int:screening_id>",methods=["GET","POST"])
+def edit_screening(screening_id):
+    error = None 
+    if  "admin_id" not in session:
+        return redirect(url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    try:
+        cur.execute("""
+            SELECT *
+            From Screenings
+            Where screeningID =?,"""(screening_id,))
+        screening = cur.fetchone()
+        if screening is None:
+            abort(404)
+        cur.execute("SELECT filmID,Title FROM Films  ORDER BY Title")
+        films = cur.fetchall()
+        if request.method =="POST":
+            film_id = request.form.get("FilmID","").strip()
+            screening_date = request.form.get("ScreeningDate","").strip()
+            screening_time = request.form.get("ScreeningTime","").strip()
+            screen_number = request.form.get("ScreenNumber","").strip()
+            if not film_id or not screening_date or not screening_time or not screen_number:
+                return render_template(
+                    "edit_screening.html",
+                    screening =  screening,
+                    films = films,
+                    error = "Please complete all fields."
+                )
+            try:
+                film_id = int(film_id)
+                screen_number = int(screen_number)
+                if screen_number <= 0:
+                    raise ValueError
+            except ValueError:
+                return render_template(
+                    "edit_screening.html",
+                    screening = screening,
+                    films = films,
+                    error = "please enter a valid film and screen number."
+                )
+            cur.execute("SELECT FilmID FROM Films WHERE FilmID =?",(film_id,))
+            if cur.fetchone() is None:
+                abort(400)
+            cur.execute("SELECT COUNT (*) FROM Booking WHERE ScreeningID = ?",(screening_id,))
+            if cur.fetchone ()[0] > 0:
+                return render_template(
+                    "edit_screening.html",
+                    screening = screening,
+                    films = films,
+                    error = "This screening has booking cannot be edited"
+                )
+            cur.execute("""
+                UPDATE Screenings
+                SET filmID = ?,
+                    ScreeningDate = ?,
+                    ScreeningTime = ?,
+                    ScreenNumber = ?
+                WHERE Screening = ?
+            """, (
+                film_id,
+                screening_date,
+                screening_time,
+                screen_number,
+                screening_id
+            ))
+
+            con.comitt()
+            return redirect (url_for("manage_screenings"))
+        
+        return render_template(
+            "edit_screening.html",
+            screening = screening,
+            films = films
+        )
+    finally:
+        con.close()
+
 @app.route("/admin_logout")
 def admin_logout():
     session.pop("admin_id",None)

@@ -194,5 +194,9 @@ cursor.execute(
     "SELECT * FROM films WHERE Genre = ?",
     ("comedy",)
 )
+cursor.execute("""
+    ALTER TABLE Films
+ADD COLUMN IsActive INTEGER DEFAULT 1
+""")
 
 conn.commit()

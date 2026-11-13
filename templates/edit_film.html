@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CineBook-EDIT FILM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<h1>Edit Film</h1>
+{% if error %}
+    <p>{{ error }}</p>
+{%endif%}
+<form method = "POST">
+    <label>film Title </label>
+    <input type ="text" name ="Title" value ="{{ film['Title']}}" required>
+
+    <label>Genre</label>
+    <input type ="text" name ="genre" value ="{{film['genre']}}" required>
+
+    <label>Age Rating </label>
+    <input type ="text" name ="ageRating" value ="{{film['AgeRating']}}"required>
+
+    <label>Duration(minutes)</label>
+    <input type ="text" name ="duration" value ="{{film['Duration']}}"  min ="1" required>
+
+    <label>Description</label>
+    <textarea name ="description" required>{{ film['description']}}</textarea>
+    <button type ="sumbit"> Save changes </button>
+
+    <a href="{{url_for('manage_films')}}">Cancel</a>
+
+</form>
+</body>
+</html>

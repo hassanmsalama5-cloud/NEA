@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset="UTF -8">
+    <title>Edit Screening - CineBOOK</title>
+    <link rel ="stylesheet" href = "{{url_for('static',filename = 'style.css')}}">
+</head>
+<body>
+<h1>Edit Screening</h1>
+{% if error %}
+    <p> {{ error }}</p>
+{%endif}
+<form method ="POST">
+    <label>Film</label>
+<select name = "FilmID" required>
+    {% for film in films}
+    <option value = "{{film['filmID']}}"
+        {% if film ['filmID'] == screening['FilmID']%}
+            selected
+        {% endif %}>
+        {{ film['Title']}}
+    </option>
+    {%endfor%}
+    </select>
+    <label>Screening Date</label>
+    <input type ="date" name = "ScreeningDate" value ="{{ screening['ScreeningDate']}}" required>
+
+    <label>Screening time</label>
+    <input type ="time" name = "ScreeningTime" value ="{{ screening['ScreeningTime']}}" required>
+
+    <label>Screen Number</label>
+    <input type ="numver" name = "ScreeningNumber" value ="{{ screening['ScreeningNumber']}}"  min ="1" required>
+
+    <button type = "submit">Save Changes</button>
+
+    <a href = "{{url_for ('manage_screening')}}">Cancel</a>
+</form>
+</body>
+</html>

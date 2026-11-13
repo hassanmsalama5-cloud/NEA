@@ -6,5 +6,25 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
+        {% for booking in bookings %}
+        <div class ="booking-card">
+            <h3>booking #{{booking['bookingID']}}</h3>
+            <p>Customer:{{booking['username']}}</p>
+            <p>Film:{{booking['title']}}</p>
+            <p>Booking Date:{{booking['bookingDate']}}</p>
+            <p> Screening time:{{booking['ScreeningTime']}}</p>
+            <p> Screening date:{{booking['ScreeningDate']}}</p>
+            <p> Screen number:{{booking['ScreenNumber']}}</p>
+            <p>Number of tickets :{{booking['numberOfTickets']}}</p>
+            <p> Total price:£{{"%.2f"|format(booking['TotalPrice'])}}</p>
+            <a href ="{{url_for('edit_booking',booking_id=booking['bookingID'])}}">Edit booking</a>
+            <form method = "POST" action ="{{url_for('cancel_booking',booking_id=booking['bookingID'])}}" style ="display:inline">
+                <button type="submit">Cancel Booking</button>
+            </form>
+        </div>
+        {%else%}
+        <p> No booking have been made yet.</p>
+        <a href="{{url_for('admin_dashboard')}}">Back to Admin Dashboard</a>
+        {% endfor %}
     </body>
 </html>
