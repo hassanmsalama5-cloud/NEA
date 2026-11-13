@@ -17,9 +17,9 @@
             <form method ="POST" action ="{{url_for('delete_screening',screening_id=screening['ScreeningID'])}}" style ="display:inline">
                 <button type="submit">Delete</button>
             </form>
-            <form method ="POST" action ="{{url_for('reset_seats',screening_id = screening['ScreeningID'])}}" style ="display:inline">
+            <!-- <form method ="POST" action ="{{url_for('reset_seats',screening_id = screening['ScreeningID'])}}" style ="display:inline">
                 <button type="submit">Reset Seats</button>
-            </form>
+            </form> -->
         </div>
         {% endfor %}
          <a href="{{url_for('admin_dashboard')}}">Back to Admin Dashboard</a>

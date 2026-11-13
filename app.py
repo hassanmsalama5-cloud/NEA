@@ -502,7 +502,43 @@ def edit_screening(screening_id):
         )
     finally:
         con.close()
+@app.route("/delete_screening/<int:screening_id>", methods = ["POST"])
+def delete_screening(screening_id):
+    if "admin_id" not in session:
+        return redirect(url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    try:
+        cur = con.cursor()
+        cur.execute("""
+            SELECT ScreeningID
+            FROM Screeings
+            WHERE ScreeningID = ?
+        """,(screening_id))
+        if cur.fetchone() is None:
+            abort(404)
+        cur.execute("""
+            SELECT COUNT(*)
+            FROM Bookings
+            Where ScreeningID = ?
+        """,(screening_id))
+        if cur.fetchone()[0] > 0:
+            abort(409,"Cannot delete a screening with existing bookings.")
+        cur.execute("""
+            DELETE FROM Seats
+            WHERE ScreeningID = ?
+        """,(screening_id))
+        cur.execute("""
+            DELETE FROM Screenings 
+            WHERE ScreeningID = ?
+        """,(screening_id))
+        con.comitt()
 
+        return redirect(url_for("manage_screenings"))
+    except Exception:
+        con.rollback()
+        raise
+    finally:
+        con.close()
 @app.route("/admin_logout")
 def admin_logout():
     session.pop("admin_id",None)
