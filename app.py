@@ -540,6 +540,7 @@ def delete_screening(screening_id):
         raise
     finally:
         con.close()
+@app.route
 @app.route("/admin_logout")
 def admin_logout():
     session.pop("admin_id",None)
