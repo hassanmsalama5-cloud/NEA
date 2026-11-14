@@ -436,7 +436,8 @@ def edit_screening(screening_id):
         cur.execute("""
             SELECT *
             From Screenings
-            Where screeningID =?,"""(screening_id,))
+            Where screeningID =?
+            """,(screening_id,))
         screening = cur.fetchone()
         if screening is None:
             abort(404)
