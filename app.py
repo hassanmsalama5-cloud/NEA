@@ -348,7 +348,7 @@ def manage_bookings():
     ON b.screeningID = S.ScreeningID
     JOIN films f 
     ON S.filmID = f.filmID 
-    ORDER BY b.bookingDate DESC
+    ORDER BY b.bookingID ASC 
 """)
     bookings = [dict(row) for row in cur.fetchall()]
     con.close()
@@ -470,7 +470,7 @@ def edit_screening(screening_id):
             cur.execute("SELECT FilmID FROM Films WHERE FilmID =?",(film_id,))
             if cur.fetchone() is None:
                 abort(400)
-            cur.execute("SELECT COUNT (*) FROM Booking WHERE ScreeningID = ?",(screening_id,))
+            cur.execute("SELECT COUNT (*) FROM Bookings WHERE ScreeningID = ?",(screening_id,))
             if cur.fetchone ()[0] > 0:
                 return render_template(
                     "edit_screening.html",
@@ -484,7 +484,7 @@ def edit_screening(screening_id):
                     ScreeningDate = ?,
                     ScreeningTime = ?,
                     ScreenNumber = ?
-                WHERE Screening = ?
+                WHERE ScreeningID = ?
             """, (
                 film_id,
                 screening_date,
@@ -493,7 +493,7 @@ def edit_screening(screening_id):
                 screening_id
             ))
 
-            con.comitt()
+            con.commit()
             return redirect (url_for("manage_screenings"))
         
         return render_template("edit_screening.html",screening = screening,films = films)
@@ -600,10 +600,10 @@ def cancel_booking (booking_id):
             DELETE FROM Bookings
             WHERE bookingiD = ?
         """,(booking_id,))
-        con.comitt()
+        con.commit()
         return redirect(url_for("manage_bookings"))
     except Exception:
-        con.rollbacl()
+        con.rollback()
         raise
     finally:
         con.close()

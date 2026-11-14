@@ -29,11 +29,11 @@
     <input type ="time" name = "ScreeningTime" value ="{{ screening['ScreeningTime']}}" required>
 
     <label>Screen Number</label>
-    <input type ="numver" name = "ScreeningNumber" value ="{{ screening['ScreeningNumber']}}"  min ="1" required>
+    <input type ="number" name = "ScreenNumber" value ="{{ screening['ScreenNumber']}}"  min ="1" required>
 
     <button type = "submit">Save Changes</button>
 
-    <a href = "{{url_for ('manage_screening')}}">Cancel</a>
+    <a href = "{{url_for ('manage_screenings')}}">Cancel</a>
 </form>
 </body>
 </html>
