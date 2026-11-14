@@ -496,11 +496,7 @@ def edit_screening(screening_id):
             con.comitt()
             return redirect (url_for("manage_screenings"))
         
-        return render_template(
-            "edit_screening.html",
-            screening = screening,
-            films = films
-        )
+        return render_template("edit_screening.html",screening = screening,films = films)
     finally:
         con.close()
 @app.route("/delete_screening/<int:screening_id>", methods = ["POST"])
@@ -573,8 +569,45 @@ def reset_seats(screening_id):
             raise
     finally:
         con.close()
-@app.route("/cancel_booking/<int:booking_id",methods=["POST"])
-def cancel_booking 
+@app.route("/cancel_booking/<int:booking_id>",methods=["POST"])
+def cancel_booking (booking_id):
+    if "admin_id" not in session:
+        return redirect(url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    try:
+        cur = con.cursor()
+        cur.execute("""
+            SELECT bookingID
+            FROM Bookings
+            WHERE bookingID = ?
+        """,(booking_id,))
+        if cur.fetchone() is None:
+            abort(404)
+        cur.execute("""
+            UPDATE Seats 
+            SET IsAvailable = 1
+            WHERE SeatID IN (
+                SELECT seatID
+                FROM BookingSeats
+                WHERE bookingID = ?
+            )
+        """,(booking_id,))
+        cur.execute("""
+            DELETE FROM BookingSeats
+            WHERE bookingID = ?
+        """,(booking_id,))
+        cur.execute("""
+            DELETE FROM Bookings
+            WHERE bookingiD = ?
+        """,(booking_id,))
+        con.comitt()
+        return redirect(url_for("manage_bookings"))
+    except Exception:
+        con.rollbacl()
+        raise
+    finally:
+        con.close()
+
 @app.route("/admin_logout")
 def admin_logout():
     session.pop("admin_id",None)

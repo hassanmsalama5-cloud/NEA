@@ -198,8 +198,4 @@ cursor.execute(
 #     ALTER TABLE Films
 # ADD COLUMN IsActive INTEGER DEFAULT 1
 # """)
-cursor.execute("""
-    ALTER TABLE Films
-ADD COLUMN IsActive INTEGER DEFAULT 1
- """)
 conn.commit()
