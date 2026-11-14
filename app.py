@@ -540,7 +540,39 @@ def delete_screening(screening_id):
         raise
     finally:
         con.close()
-@app.route
+@app.route("/reset_seats/<int:screening_id>",methods=["POST"])
+def reset_seats(screening_id):
+    if "admin_id" not in session:
+        return (url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    try:
+        cur = con.cursor()
+        cur.execute("""
+            SELECT ScreeningID
+            FROM Screenings 
+            WHERE ScreeningID = ?
+        """,(screening_id,))
+        if cur.fetchone() is None:
+            abort(404)
+        cur.execute("""
+            SELECT COUNT(*)
+            FROM Bookings
+            WHERE ScreeningID = ?
+        """,(screening_id,))
+        if cur.fetchone()[0] > 0:
+            abort(409,"Cannot reset seats becuase this screening has booking.")
+        cur.execute("""
+            UPDATE Seats 
+            SET IsAvailable = 1
+            WHERE ScreeningID = ?
+        """,(screening_id,))
+        con.commit()
+        return redirect(url_for("manage_screenings"))
+    except Exception:
+            con.rollback()
+            raise
+    finally:
+        con.close()
 @app.route("/admin_logout")
 def admin_logout():
     session.pop("admin_id",None)
