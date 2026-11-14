@@ -13,7 +13,7 @@
 <form method ="POST">
     <label>Film</label>
 <select name = "FilmID" required>
-    {% for film in films}
+    {% for film in films%}
     <option value = "{{film['filmID']}}"
         {% if film ['filmID'] == screening['FilmID']%}
             selected
