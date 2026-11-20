@@ -94,3 +94,23 @@ a:hover{
     box-shadow:none;
     background-color: transparent;
 }
+input[type="checkbox"]{
+    width:auto;
+    padding:0;
+    margin: 0 8px 0 0;
+    accent-color:#3b82f6;
+    vertical-align:middle;
+}
+.screening-seats label{
+    display:flex;
+    align-items: center;
+    gap:10px;
+    margin-bottom: 12px;
+    color:white;
+}
+.screening-seats input[type="checkbox"]{
+    width:20px;
+    height:20px;
+    margin:0;
+    flex-shrink:0;
+}

@@ -35,7 +35,7 @@
                 <input
                     type="checkbox"
                     name="seat_ids"
-                    value="{{seat['seatID']}}"
+                    value="{{seat['SeatID']}}"
                     {% if seat['IsCurrentBooking'] == 1 %}
                             checked
                     {%endif%}
@@ -43,7 +43,7 @@
                         disabled
                     {%endif%}
                 >
-                {{seat['SeatNumber']}}
+                {{ seat['SeatNumber'] }}
 
                 {% if seat['IsCurrentBooking']==1%}
                     (Currently booked)
@@ -93,7 +93,7 @@
     }
     function updateTotal(){
         const selectedSeats = document.querySelectorAll(
-            'input[name="seat_ids"]:checked'
+            '.screening-seats:not([hidden]) input[name="seat_ids"]:checked'
         );
     const ticketCount = selectedSeats.length;
     const totalPrice = ticketCount * 10.99;
@@ -108,7 +108,7 @@
         ).forEach(checkbox =>{
             checkbox.addEventListener("change",updateTotal);
         });
-        updateTotal();
+        updateSeats();
 </script>
 </body>
 </html>
