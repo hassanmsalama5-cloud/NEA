@@ -26,35 +26,40 @@
         {% for screening in screenings%}
             <div class ="screening-seats"
                  data-screenings="{{screening['ScreeningID']}}"
-                 {% if screening['screening'] !=  booking['ScreeningID']%}
+                 {% if screening['screeningID'] !=  booking['ScreeningID']%}
                     hidden
-                {%endif%}>
+                {% endif %}>
             <h3>{{screening['Title']}}</h3>
-            {% for seat in seats_by_screening[screening['Screening']]%}
+            {% for seat in seats_by_screening[screening['ScreeningID']]%}
             <label>
                 <input
-                 type ="checkbox"
-                 name = "seat_ids"
-                 value = "{{seat['seatID']}}"
-                 {% if seat['IsCurrentBooking'] ==1%}
-                    checked
-                {%endif%}
-                {%if seat['IsAvailable'] ==0 % and seat[IsCurrentBooking']==0%}
-                disabled
-                {%endif%}
+                    type ="checkbox"
+                    name = "seat_ids"
+                    value = " {{seat['seatID']}}"
+                    {% if seat['IsCurrentBooking'] == 1 %}
+                            checked
+                    {%endif%}
+                    {%if seat['IsAvailable'] == 0 and seat['IsCurrentBooking'] == 0 %}
+                        disabled
+                    {%endif%}
                 >
-                {{seat['seatNumber']}}
-                {% if seat ['IsCurrentBooking']==1%}
+                {{seat['SeatNumber']}}
+
+                {% if seat['IsCurrentBooking']==1%}
                     (Currently booked)
                 {% elif seat['IsAvailable'] == 0%}
                     (Unavailable)
                 {% endif%}
 
             </label>
+
             {%endfor%}
+
             </div>
+
         {%endfor%} 
-    <h2> Booking Summary</h2>   
+    
+    <h2>Booking Summary</h2>   
     <p> 
         Number of tickets:
         <span id ="ticket-count">0</span>
@@ -84,7 +89,7 @@
                 });
             }
         });
-    updateTotal();
+    updateSeats();
     }
     function updateTotal(){
         const selectedSeats = document.querySelectorAll(

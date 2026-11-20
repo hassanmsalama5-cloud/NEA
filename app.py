@@ -639,7 +639,7 @@ def edit_booking(booking_id):
                 SELECT ScreeningID 
                 FROM Screenings 
                 WHERE ScreeningID = ?
-            """(screening_id,))
+            """,(screening_id,))
             if cur.fethcone () is None:
                 abort(404,"Screening not found.")
             cur.execute("""
@@ -650,7 +650,7 @@ def edit_booking(booking_id):
                     FROM BookingSeats
                     WHERE bookingID = ?
                 )
-            """(booking_id,))
+            """,(booking_id,))
             placeholders = ",".join("?" for _ in seat_ids)
             cur.execute(f"""
                 SELECT SeatID
@@ -681,12 +681,12 @@ def edit_booking(booking_id):
             cur.execute("""
                 DELETE FROM BookingSeats
                 WHERE bookingID = ?
-            """(booking_id,))
+            """,(booking_id,))
             for seat_id in seat_ids:
                 cur.execute("""
                 INSERT INTO BookingSeats(bookingID,SeatID)
                 VALUES(?,?)
-            """(booking_id,seat_id))
+            """,(booking_id,seat_id))
             cur.execute(f"""
                 UPDATE Seats 
                 SET IsAvailable = 0 
@@ -725,7 +725,8 @@ def edit_booking(booking_id):
                 ON S.SeatID = BS.SeatID
                 AND BS.bookingID = ?
             ORDER BY S.ScreeningID,S.SeatNumber
-        """(booking_id))
+        """,(booking_id,))
+
         seat_rows = cur.fetchall()
         seats_by_screening = {}
         for seat in seat_rows:
@@ -739,6 +740,7 @@ def edit_booking(booking_id):
             screenings = screenings,
             seats_by_screening = seats_by_screening
         )
+
     except Exception:
         con.rollback()
         raise

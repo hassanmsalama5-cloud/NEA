@@ -18,6 +18,9 @@
             <p>Number of tickets :{{booking['NumberOfTickets']}}</p>
             <p> Total price:£{{"%.2f"|format(booking['TotalPrice'])}}</p>
             <a href ="{{url_for('edit_booking',booking_id=booking['bookingID'])}}">Edit Booking</a>
+            <br>
+            <br>
+            <br>
             <form method = "POST" action ="{{url_for('cancel_booking',booking_id=booking['bookingID'])}}" style ="display:inline">
                 <button type="submit">Cancel Booking</button>
             </form>
