@@ -13,7 +13,7 @@
         <select name ="screening_id" id = "screening" required>
             {% for screening in screenings %}
             <option value ="{{screening['ScreeningID']}}"
-                {% if screening['screeningID'] == booking['screeningID']%}
+                {% if screening['ScreeningID'] == booking['ScreeningID']%}
                 selected
                 {% endif %}>
                 {{screening['Title']}}
@@ -33,9 +33,9 @@
             {% for seat in seats_by_screening[screening['ScreeningID']]%}
             <label>
                 <input
-                    type ="checkbox"
-                    name = "seat_ids"
-                    value = " {{seat['seatID']}}"
+                    type="checkbox"
+                    name="seat_ids"
+                    value="{{seat['seatID']}}"
                     {% if seat['IsCurrentBooking'] == 1 %}
                             checked
                     {%endif%}
@@ -77,7 +77,7 @@
     function updateSeats(){
         const selectScreening = screeningSelect.values;
         seatGroups.forEach(group=>{
-            if (group.data.set.screening === selectScreening){
+            if (group.dataset.screening === selectScreening){
                 group.hidden = false;
 
             } else{
@@ -85,11 +85,11 @@
                 group.querySelectorAll(
                     'input[name="seat_ids"]'
                 ).forEach(checkbox =>{
-                    checkbox.checked= false;
+                    checkbox.checked = false;
                 });
             }
         });
-    updateSeats();
+    updateTotal();
     }
     function updateTotal(){
         const selectedSeats = document.querySelectorAll(
@@ -98,10 +98,10 @@
     const ticketCount = selectedSeats.length;
     const totalPrice = ticketCount * 10.99;
     document.getElementById("ticket-count").textContent = ticketCount;
-    docuent.getElementById("total-price").textContent = totalPrice.toFixed(2);
+    document.getElementById("total-price").textContent = totalPrice.toFixed(2);
     }
 
-    screeningSelect.addEventlistener("change,updateSeats");
+    screeningSelect.addEventlistener("change",updateSeats);
     document.querySelectorAll(
         'input[name="seat_ids"]'
 

@@ -625,7 +625,7 @@ def edit_booking(booking_id):
             abort(404)
         if request.method == "POST":
             screening_id = request.form.get("screening_ID",type=int)
-            seat_ids = request.form.getList("seat_ids")
+            seat_ids = request.form.getlist("seat_ids")
             if not screening_id or not seat_ids:
                 abort(400,"Please select a screening and at least one seat.")
             try:
@@ -640,11 +640,11 @@ def edit_booking(booking_id):
                 FROM Screenings 
                 WHERE ScreeningID = ?
             """,(screening_id,))
-            if cur.fethcone () is None:
+            if cur.fetchone() is None:
                 abort(404,"Screening not found.")
             cur.execute("""
                 UPDATE Seats
-                SET IsAvaialble = 1
+                SET IsAvailable = 1
                 WHERE SeatID IN(
                     SELECT SeatID
                     FROM BookingSeats
@@ -658,7 +658,7 @@ def edit_booking(booking_id):
                 WHERE ScreeningID = ?
                 AND IsAvailable = 1 
                 AND SeatID in ({placeholders})
-            """,[screening_id + seat_ids])
+            """,[screening_id] + seat_ids)
             available_seats={
                 row["SeatID"] for row in cur.fetchall()
             }
@@ -691,8 +691,9 @@ def edit_booking(booking_id):
                 UPDATE Seats 
                 SET IsAvailable = 0 
                 WHERE ScreeningID =?
+                AND IsAvailable = 1 
                 AND SeatID IN ({placeholders})
-            """,[screening_id + seat_ids])
+            """,[screening_id] + seat_ids)
             if cur.rowcount != number_of_tickets:
                 abort(409,"Could not reserve all selected seats.")
             con.commit()
