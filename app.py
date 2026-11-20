@@ -333,13 +333,13 @@ def manage_bookings():
     cur.execute("""
     SELECT
     b.bookingID,
-    C.username,
-    f.title,
+    C.Username,
+    f.Title,
     b.bookingDate,
     S.ScreeningDate,
     S.ScreeningTime,
     S.ScreenNumber,
-    b.numberOfTickets,
+    b.NumberOfTickets,
     b.TotalPrice
     FROM bookings b 
     JOIN Customers C 
@@ -607,7 +607,143 @@ def cancel_booking (booking_id):
         raise
     finally:
         con.close()
+@app.route("/edit_booking/<int:booking_id>",methods=["GET","POST"])
+def edit_booking(booking_id):
+    if "admin_id" not in session:
+        return redirect(url_for("admin_signin"))
+    con = sqlite3.connect(DATABASE)
+    con.row_factory = sqlite3.Row
+    try:
+        cur = con.cursor()
+        cur.execute("""
+            SELECT*
+            FROM Bookings
+            WHERE bookingID = ?
+    """,(booking_id,))
+        booking = cur.fetchone()
+        if booking is None:
+            abort(404)
+        if request.method == "POST":
+            screening_id = request.form.get("screening_ID",type=int)
+            seat_ids = request.form.getList("seat_ids")
+            if not screening_id or not seat_ids:
+                abort(400,"Please select a screening and at least one seat.")
+            try:
+                seat_ids =[int(seat_id)for seat_id in seat_ids]
+            except ValueError:
+                abort(400,"Invalid seat selection")
+            if len (seat_ids) != len(set(seat_ids)):
+                abort(400,"Duplicate seats selected")
+            cur.execute("BEGIN IMMEDIATE")
+            cur.execute("""
+                SELECT ScreeningID 
+                FROM Screenings 
+                WHERE ScreeningID = ?
+            """(screening_id,))
+            if cur.fethcone () is None:
+                abort(404,"Screening not found.")
+            cur.execute("""
+                UPDATE Seats
+                SET IsAvaialble = 1
+                WHERE SeatID IN(
+                    SELECT SeatID
+                    FROM BookingSeats
+                    WHERE bookingID = ?
+                )
+            """(booking_id,))
+            placeholders = ",".join("?" for _ in seat_ids)
+            cur.execute(f"""
+                SELECT SeatID
+                FROM Seats
+                WHERE ScreeningID = ?
+                AND IsAvailable = 1 
+                AND SeatID in ({placeholders})
+            """,[screening_id + seat_ids])
+            available_seats={
+                row["SeatID"] for row in cur.fetchall()
+            }
+            if available_seats != set(seat_ids):
+                abort(409,"One or more selected seats are unavailable.")
+            number_of_tickets = len(seat_ids)
+            total_price = number_of_tickets * 10.99
+            cur.execute("""
+            UPDATE bookings 
+            SET ScreeningID = ?,
+                numberOfTickets =?,
+                TotalPrice =?
+            Where bookingID = ?
+            """,(
+                screening_id,
+                number_of_tickets,
+                total_price,
+                booking_id
+            ))
+            cur.execute("""
+                DELETE FROM BookingSeats
+                WHERE bookingID = ?
+            """(booking_id,))
+            for seat_id in seat_ids:
+                cur.execute("""
+                INSERT INTO BookingSeats(bookingID,SeatID)
+                VALUES(?,?)
+            """(booking_id,seat_id))
+            cur.execute(f"""
+                UPDATE Seats 
+                SET IsAvailable = 0 
+                WHERE ScreeningID =?
+                AND SeatID IN ({placeholders})
+            """,[screening_id + seat_ids])
+            if cur.rowcount != number_of_tickets:
+                abort(409,"Could not reserve all selected seats.")
+            con.commit()
+            return redirect(url_for("manage_bookings"))
+        cur.execute("""
+            SELECT
+                S.ScreeningID,
+                F.Title,
+                S.ScreeningDate,
+                S.ScreeningTime,
+                 S.ScreenNumber
+            FROM Screenings S
+            JOIN Films F ON S.FilmID = F.FilmID
+            ORDER BY S.ScreeningDate,S.ScreeningTime
+        """)
+        screenings = cur.fetchall()
 
+        cur.execute("""
+            SELECT
+                S.SeatID,
+                S.ScreeningID,
+                S.SeatNumber,
+                S.IsAvailable,
+                CASE
+                    WHEN BS.bookingID IS NOT NULL THEN 1 
+                    ELSE 0
+                END AS IsCurrentBooking
+            FROM Seats S
+            LEFT JOIN BookingSeats BS
+                ON S.SeatID = BS.SeatID
+                AND BS.bookingID = ?
+            ORDER BY S.ScreeningID,S.SeatNumber
+        """(booking_id))
+        seat_rows = cur.fetchall()
+        seats_by_screening = {}
+        for seat in seat_rows:
+            screening = seat["ScreeningID"]
+            seats_by_screening.setdefault(screening,[]).append(
+                dict(seat)
+            )
+        return render_template(
+            "edit_booking.html",
+            booking=booking,
+            screenings = screenings,
+            seats_by_screening = seats_by_screening
+        )
+    except Exception:
+        con.rollback()
+        raise
+    finally:
+        con.close()
 @app.route("/admin_logout")
 def admin_logout():
     session.pop("admin_id",None)
