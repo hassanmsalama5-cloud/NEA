@@ -25,8 +25,8 @@
         <h2>Select Seats</h2>
         {% for screening in screenings%}
             <div class ="screening-seats"
-                 data-screenings="{{screening['ScreeningID']}}"
-                 {% if screening['screeningID'] !=  booking['ScreeningID']%}
+                 data-screening="{{screening['ScreeningID']}}"
+                 {% if screening['ScreeningID'] !=  booking['ScreeningID']%}
                     hidden
                 {% endif %}>
             <h3>{{screening['Title']}}</h3>
@@ -75,7 +75,7 @@
     const screeningSelect = document.getElementById("screening");
     const seatGroups = document.querySelectorAll(".screening-seats");
     function updateSeats(){
-        const selectScreening = screeningSelect.values;
+        const selectScreening = screeningSelect.value;
         seatGroups.forEach(group=>{
             if (group.dataset.screening === selectScreening){
                 group.hidden = false;
@@ -101,7 +101,7 @@
     document.getElementById("total-price").textContent = totalPrice.toFixed(2);
     }
 
-    screeningSelect.addEventlistener("change",updateSeats);
+    screeningSelect.addEventListener("change",updateSeats);
     document.querySelectorAll(
         'input[name="seat_ids"]'
 

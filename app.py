@@ -624,7 +624,7 @@ def edit_booking(booking_id):
         if booking is None:
             abort(404)
         if request.method == "POST":
-            screening_id = request.form.get("screening_ID",type=int)
+            screening_id = request.form.get("screening_id",type=int)
             seat_ids = request.form.getlist("seat_ids")
             if not screening_id or not seat_ids:
                 abort(400,"Please select a screening and at least one seat.")
