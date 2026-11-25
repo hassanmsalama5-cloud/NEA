@@ -6,13 +6,16 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
+    <a href = "{{url_for('add_film')}}">
+        Add New Film
+    </a>
     {%for film in films%}
     <div class = "film-card">
-            <h3>{{film['Title']}}</h3>
-            <p>genre:{{film['genre']}}</p>
-            <p>age rating:{{film['AgeRating']}}</p>
-            <p>duration:{{film['Duration']}} in minutes </p>
-            <p>description:{{film['description']}}</p>
+            <h3>Name of the film: {{film['Title']}}</h3>
+            <p>genre: {{film['genre']}}</p>
+            <p>age rating: {{film['AgeRating']}}</p>
+            <p>duration: {{film['Duration']}} in minutes </p>
+            <p>description: {{film['description']}}</p>
              <p>
             status:
                 {% if film['IsActive'] ==1 %}

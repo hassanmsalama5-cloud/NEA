@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset="UTF-8">
+    <title> add Film -  Cinebook </title>
+    <link rel = "stylesheet" href = "{{url_for('static',filename='style.css')}}">
+</head>
+<body>
+    <h1> Add New Film </h1>
+    {% if error %}
+        <p> {{ error }}</p>
+    {% endif %}
+    <form method = "POST">
+        <label> Film Title </label>
+        <input type = "text" name = "Title" required>
+        <label>Genre </label>
+        <select name = "genre" required>
+            <option value ="">Select Genre:</option>
+            <option value = "Comedy"> Comedy</option>
+            <option value = "Action"> Action </option>
+            <option value ="Horror"> Horror </option>
+            <option value ="Sci-Fi"> Sci-Fi</option>
+            <option value = "Thriller">Thriller</option>
+        </select>
+        <label> Age Rating </label>
+        <select name = "AgeRating" required>
+            <option value ="">Select Age Rating</option>
+            <option value ="U">U</option>
+            <option value = "12A">12A</option>
+            <option value = "12">12</option>
+            <option value = "15">15</option>
+            <option value = "18">18</option>
+        </select>
+        <label>Duration (minutes)</label>
+            <input type = "number" name = "Duration" min = "1" required>
+        <label>Description </label>
+        <textarea name = "description" required></textarea>
+        <button type ="submit">Add Film</button>
+        <a href = "{{url_for('manage_films')}}">Cancel</a>
+    </form>
+</body>
+</html>

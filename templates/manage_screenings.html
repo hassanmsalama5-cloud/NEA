@@ -7,6 +7,7 @@
     </head>
     <body>
         <h1>Manage Screenings</h1>
+        <a href = "{{url_for('add_screening')}}"> Add New Screening</a>
         {% for screening in screenings %}
         <div class ="screening-card ">
             <h3> Film title: {{screening['Title']}}</h3>

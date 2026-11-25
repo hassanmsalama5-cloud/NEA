@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for,session,abort
-from datetime import date 
+from datetime import date,time
 # from werkzeug.security import check_password_hash
 app = Flask(__name__)
 app.secret_key = "1932ADFV"
@@ -119,7 +119,7 @@ def select_seats(screening_id, film_name):
             "booked": not bool(seat["isavailable"])
 
         })
-    seatslist= []
+    seatslist = []
     for row in sorted(seats_by_row):
         seatslist.append(seats_by_row[row])
 
@@ -643,18 +643,18 @@ def edit_booking(booking_id):
             if cur.fetchone() is None:
                 abort(404,"Screening not found.")
             cur.execute("""
-                UPDATE Seats
+                UPDATE seats
                 SET IsAvailable = 1
-                WHERE SeatID IN(
-                    SELECT SeatID
+                WHERE seatID IN(
+                    SELECT seatID
                     FROM BookingSeats
                     WHERE bookingID = ?
                 )
             """,(booking_id,))
             placeholders = ",".join("?" for _ in seat_ids)
             cur.execute(f"""
-                SELECT SeatID
-                FROM Seats
+                SELECT seatID
+                FROM seats
                 WHERE ScreeningID = ?
                 AND IsAvailable = 1 
                 AND SeatID in ({placeholders})
@@ -688,10 +688,10 @@ def edit_booking(booking_id):
                 VALUES(?,?)
             """,(booking_id,seat_id))
             cur.execute(f"""
-                UPDATE Seats 
-                SET IsAvailable = 0 
-                WHERE ScreeningID =?
-                AND IsAvailable = 1 
+                UPDATE seats 
+                SET isavailable = 0 
+                WHERE screeningID =?
+                AND isavailable = 1 
                 AND SeatID IN ({placeholders})
             """,[screening_id] + seat_ids)
             if cur.rowcount != number_of_tickets:
@@ -713,19 +713,19 @@ def edit_booking(booking_id):
 
         cur.execute("""
             SELECT
-                S.SeatID,
-                S.ScreeningID,
-                S.SeatNumber,
-                S.IsAvailable,
+                s.seatID,
+                s.screeningID,
+                s.seatnumber,
+                s.isavailable,
                 CASE
                     WHEN BS.bookingID IS NOT NULL THEN 1 
                     ELSE 0
                 END AS IsCurrentBooking
-            FROM Seats S
+            FROM seats s
             LEFT JOIN BookingSeats BS
-                ON S.SeatID = BS.SeatID
+                ON s.seatID = BS.seatID
                 AND BS.bookingID = ?
-            ORDER BY S.ScreeningID,S.SeatNumber
+            ORDER BY s.screeningID,s.seatnumber
         """,(booking_id,))
 
         seat_rows = cur.fetchall()
@@ -747,6 +747,115 @@ def edit_booking(booking_id):
         raise
     finally:
         con.close()
+
+@app.route("/add_film",methods=["GET","POST"])
+def add_film():
+    if "admin_id" not in session:
+        return redirect(url_for("admin_signin"))
+    error = None
+    if request.method == "POST":
+            title = request.form.get("Title","").strip()
+            genre = request.form.get("genre","").strip()
+            age_rating = request.form.get("AgeRating","").strip()
+            duration = request.form.get("Duration","").strip()
+            description = request.form.get("description","").strip()
+            if not title or not genre or not age_rating or not duration or not description:
+                error = "Please complete all fields."
+            else:
+                try:
+                    duration = int(duration)
+                    if duration <= 0:
+                        raise ValueError
+                except ValueError:
+                    error = "duration must be a positive integer."
+            if error is  None:
+                con = sqlite3.connect(DATABASE)
+                try:
+                    cur = con.cursor()
+                    cur.execute("""
+                        INSERT INTO Films
+                        (Title,genre,AgeRating,Duration,description,IsActive)
+                    VALUES(?,?,?,?,?,1)
+                    """,(
+                        title,
+                        genre,
+                        age_rating,
+                        duration,
+                        description
+                     ))
+                    
+                    con.commit()
+                    return redirect(url_for("manage_films"))
+                except Exception:
+                    con.rollback()
+                    raise
+                finally:
+                    con.close()
+    return render_template("add_film.html",error = error)
+@app.route("/add_screening",methods = ["GET","POST"])
+def add_screening():
+    if "admin_id" not in session:
+        return redirect(url_for("admin_signin"))
+    error = None
+    con = sqlite3.connect(DATABASE)
+    con.row_factory = sqlite3.Row
+    try:
+        cur = con.cursor()
+        cur.execute("""
+            SELECT FilmID,Title
+            FROM Films
+            WHERE IsActive = 1 
+            ORDER BY Title
+        """)
+        films = cur.fetchall()
+        if request.method =="POST":
+            film_id = request.form.get("FilmID",type=int)
+            screening_date = request.form.get("ScreeningDate","").strip()
+            screening_time = request.form.get("ScreeningTime","").strip()
+            screen_number = request.form.get("ScreenNumber","").strip()
+            if not film_id or not screening_date or not screening_time or not screen_number:
+                error = "please complete all fields."
+            else:
+                try:
+                    screen_number = int(screen_number)
+                    date.fromisoformat(screening_date)
+                    time.fromisoformat(screening_time)
+                    if screen_number <=0:
+                        raise ValueError
+                except ValueError:
+                    error = "please enter a valid date, time and screen number."
+            if error is None:
+                 cur.execute("""
+                    SELECT FilmID
+                    FROM Films
+                    Where FilmID = ?
+                    AND IsActive = 1
+                """,(film_id,))
+                 if cur.fetchone() is None:
+                    error = "Please  select a valid active film."
+            if error is None:
+                 cur.execute("""
+                    INSERT INTO Screenings
+                    (FilmID,ScreeningDate,ScreeningTime,ScreenNumber)
+                    VALUES (?,?,?,?)
+                """,(
+                    film_id,
+                    screening_date,
+                    screening_time,
+                    screen_number
+                ))
+                 con.commit()
+                 return redirect(url_for("manage_screening"))
+        return render_template(
+                "add_screening.html",
+                films=films,
+                error=error
+            )
+    finally:
+            con.close()
+
+
+
 @app.route("/admin_logout")
 def admin_logout():
     session.pop("admin_id",None)

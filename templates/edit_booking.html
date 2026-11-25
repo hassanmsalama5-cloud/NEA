@@ -13,7 +13,7 @@
         <select name ="screening_id" id = "screening" required>
             {% for screening in screenings %}
             <option value ="{{screening['ScreeningID']}}"
-                {% if screening['ScreeningID'] == booking['ScreeningID']%}
+                {% if screening['ScreeningID'] == booking['screeningID']%}
                 selected
                 {% endif %}>
                 {{screening['Title']}}
@@ -26,7 +26,7 @@
         {% for screening in screenings%}
             <div class ="screening-seats"
                  data-screening="{{screening['ScreeningID']}}"
-                 {% if screening['ScreeningID'] !=  booking['ScreeningID']%}
+                 {% if screening['ScreeningID'] !=  booking['screeningID']%}
                     hidden
                 {% endif %}>
             <h3>{{screening['Title']}}</h3>
@@ -35,29 +35,29 @@
                 <input
                     type="checkbox"
                     name="seat_ids"
-                    value="{{seat['SeatID']}}"
+                    value="{{seat['seatID']}}"
                     {% if seat['IsCurrentBooking'] == 1 %}
-                            checked
-                    {%endif%}
-                    {%if seat['IsAvailable'] == 0 and seat['IsCurrentBooking'] == 0 %}
+                        checked
+                    {% endif %}
+                    {%if seat['isavailable'] == 0 and seat['IsCurrentBooking'] == 0 %}
                         disabled
-                    {%endif%}
+                    {% endif %}
                 >
-                {{ seat['SeatNumber'] }}
+                {{ seat['seatnumber'] }}
 
-                {% if seat['IsCurrentBooking']==1%}
+                {% if seat['IsCurrentBooking'] == 1 %}
                     (Currently booked)
-                {% elif seat['IsAvailable'] == 0%}
+                {% elif seat['isavailable'] == 0 %}
                     (Unavailable)
-                {% endif%}
+                {% endif %}
 
             </label>
 
-            {%endfor%}
+            {% endfor %}
 
             </div>
 
-        {%endfor%} 
+        {% endfor %} 
     
     <h2>Booking Summary</h2>   
     <p> 
