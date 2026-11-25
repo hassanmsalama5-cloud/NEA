@@ -6,8 +6,8 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
-    <a href = "{{url_for('add_film')}}">
-        Add New Film
+    <a class ="add-film-button" href = "{{url_for('add_film')}}">
+        + Add New Film
     </a>
     {%for film in films%}
     <div class = "film-card">
@@ -24,11 +24,13 @@
                  Archived
                 {% endif %}
             </p>
-            <a href = "{{url_for('edit_film',film_id=film['filmID'])}}">Edit</a>
+        <div class="card-actions">
+            <a  class ="edit-button" href = "{{url_for('edit_film',film_id=film['filmID'])}}">Edit</a>
         
         <form method ="POST" action ="{{url_for('archive_film',film_id=film['filmID'])}}" style="display: inline;">
-            <button type="submit">Archive film</button>
+            <button class="archive-button" type="submit">Archive film</button>
         </form>
+        </div>
     </div>
     {%endfor%}
    

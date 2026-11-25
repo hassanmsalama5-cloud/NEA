@@ -25,9 +25,11 @@
 
     <label>Description</label>
     <textarea name ="description" required>{{ film['description']}}</textarea>
-    <button type ="sumbit"> Save changes </button>
+     <div class ="form-actions">
+        <button type ="sumbit">Save Changes </button>
+         <a href = "{{url_for ('manage_films')}}"class ="cancel-button">Cancel</a>
 
-    <a href="{{url_for('manage_films')}}">Cancel</a>
+    </div>
 
 </form>
 </body>

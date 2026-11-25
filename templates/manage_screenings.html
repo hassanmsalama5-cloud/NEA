@@ -7,22 +7,26 @@
     </head>
     <body>
         <h1>Manage Screenings</h1>
-        <a href = "{{url_for('add_screening')}}"> Add New Screening</a>
+        <a class = "add-screening-button" href = "{{url_for('add_screening')}}">  + Add New Screening</a>
         {% for screening in screenings %}
         <div class ="screening-card ">
             <h3> Film title: {{screening['Title']}}</h3>
             <p>screening date:{{screening ['ScreeningDate']}}</p>
             <p>screening time:{{screening['ScreeningTime']}}</p>
             <p>screen number:{{screening['ScreenNumber']}}</p>
-            <a href = "{{url_for('edit_screening',screening_id=screening['ScreeningID'])}}">Edit</a>
+            <div class="card-actions">
+
+        
+            <a class ="edit-button" href = "{{url_for('edit_screening',screening_id=screening['ScreeningID'])}}">Edit</a>
             <form method ="POST" action ="{{url_for('delete_screening',screening_id=screening['ScreeningID'])}}" style ="display:inline">
-                <button type="submit">Delete</button>
+                <button class ="delete-button" type="submit">Delete</button>
             </form>
             <form method ="POST" action ="{{url_for('reset_seats',screening_id = screening['ScreeningID'])}}" style ="display:inline">
-                <button type="submit">Reset Seats</button>
+                <button class = "reset-button" type="submit">Reset Seats</button>
             </form>
+            </div>
         </div>
         {% endfor %}
-         <a href="{{url_for('admin_dashboard')}}">Back to Admin Dashboard</a>
+         <a  class = "dashboard-link"href="{{url_for('admin_dashboard')}}">Back to Admin Dashboard</a>
     </body>
 </html>

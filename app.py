@@ -490,9 +490,8 @@ def edit_screening(screening_id):
                 screening_date,
                 screening_time,
                 screen_number,
-                screening_id
+                screening_id,
             ))
-
             con.commit()
             return redirect (url_for("manage_screenings"))
         
@@ -508,16 +507,16 @@ def delete_screening(screening_id):
         cur = con.cursor()
         cur.execute("""
             SELECT ScreeningID
-            FROM Screeings
+            FROM Screenings
             WHERE ScreeningID = ?
-        """,(screening_id))
+        """,(screening_id,))
         if cur.fetchone() is None:
             abort(404)
         cur.execute("""
             SELECT COUNT(*)
             FROM Bookings
             Where ScreeningID = ?
-        """,(screening_id))
+        """,(screening_id,))
         if cur.fetchone()[0] > 0:
             abort(409,"Cannot delete a screening with existing bookings.")
         cur.execute("""
@@ -528,8 +527,7 @@ def delete_screening(screening_id):
             DELETE FROM Screenings 
             WHERE ScreeningID = ?
         """,(screening_id))
-        con.comitt()
-
+        con.commit()
         return redirect(url_for("manage_screenings"))
     except Exception:
         con.rollback()
@@ -844,8 +842,18 @@ def add_screening():
                     screening_time,
                     screen_number
                 ))
+                 screening_id = cur.lastrowid
+                 for row in "ABCDEFGHIJ":
+                    for number in range(1,11):
+                     seat_number = f"{row}{number}"
+                     cur.execute("""
+                        INSERT INTO Seats 
+                        (ScreeningID,seatnumber,isavailable,screennumber)
+                        VALUES(?,?,?,1)
+                    """,(screening_id,seat_number,screen_number))
+            
                  con.commit()
-                 return redirect(url_for("manage_screening"))
+                 return redirect(url_for("manage_screenings"))
         return render_template(
                 "add_screening.html",
                 films=films,

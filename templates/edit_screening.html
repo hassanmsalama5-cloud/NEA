@@ -30,10 +30,11 @@
 
     <label>Screen Number</label>
     <input type ="number" name = "ScreenNumber" value ="{{ screening['ScreenNumber']}}"  min ="1" required>
+    <div class ="form-actions">
+        <button type ="sumbit">Save Changes </button>
+         <a href = "{{url_for ('manage_screenings')}}" class ="cancel-button">Cancel</a>
 
-    <button type = "submit">Save Changes</button>
-
-    <a href = "{{url_for ('manage_screenings')}}">Cancel</a>
+    </div>
 </form>
 </body>
 </html>

@@ -114,3 +114,173 @@ input[type="checkbox"]{
     margin:0;
     flex-shrink:0;
 }
+/* MANAGE SCREENINGS PAGE */
+.screening-card{
+    background-color:#1c2733;
+    width:100%;
+    max-width:700px;
+    padding:25px;
+    margin:15px 0;
+    border:1px solid #354454;
+    border-radius:12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.screening-card h3{
+    color:#60a5fa;
+    margin-top: 0;
+    margin-bottom:15px;
+}
+.screening-card p{
+    color:#d1d5db;
+    margin:8px 0;
+}
+.screening-action{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:20px;
+    align-items:center;
+}
+.screening-action a,
+.screening-action button{
+    width:auto;
+    padding:10px 18px;
+    border:none;
+    border-radius:6px;
+    font-size:14px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor:pointer;
+    text-align:center;
+}
+.edit-button{
+    background-color:#3b82f6;
+    color:white;
+}
+edit.button:hover{
+    background-color:#2563eb;
+}
+.delete-button{
+    background-color:#dc2626;
+    color:white;
+}
+.delete-button:hover{
+    background-color:#b91c1c;
+}
+.add-screening-button{
+    display:inline-block;
+    background-color:#16a34a;
+    color:white;
+    padding:12px 20px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:bold;
+    margin:15px 0;
+}
+.add-screening-button:hover{
+    background-color: #15803d;
+    color:white;
+}
+.reset-button{
+    background-color:#d97706;
+    color:white;
+}
+.reset-button:hover{
+    background-color:#b45309;
+}
+.dashboard-link{
+    margin-top:20px;
+    text-decoration:none;
+    font-weight:bold;
+}
+.card-actions{
+    display:flex;
+    flex-wrap: wrap;
+    gap:10px;
+    align-items:center;
+    margin-top:18px;
+}
+.card-actions form{
+    display:inline;
+    width:auto;
+    max-width: none;
+    margin:0;
+    padding:0;
+    background: transparent;
+}
+.card-actions button, 
+.card-actions a {
+    display:inline-block;
+    width:auto;
+    padding:10px 20px;
+    border:none;
+    border-radius:none;
+    font-size:16px;
+    font-weight:bold;
+    text-decoration:none;
+    cursor:pointer;
+}
+.card-actions.edit-button{
+    background-color:#3b82f6;
+    color:white;
+}
+.card-actions.delete-button{
+    background-color:#dc2626;
+    color:white;
+}
+.card-actions .reset-button{
+    background-color:#d97706;
+    color:white;
+}
+.card-actions.archive-button{
+    background-color:#64748b;
+    color:white;
+}
+.card-action a:hover,
+.card-actions button:hover{
+    opacity:0.85;
+}
+.add-film-button{
+    display:inline-block;
+    background-color:#16a34a;
+    color:white;
+    padding:12px 20px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:bold;
+    margin:15px 0;
+}
+.add-film-button:hover{
+    background-color: #15803d;
+    color:white;
+}
+.form-actions{
+    display:flex;
+    flex-direction: column;
+    gap:12px;
+    margin-top:20px;
+}
+.form-actions buttton,
+.form-actions.cancel-button{
+    width:100%;
+    padding:12px;
+    border-radius:6px;
+    text-align:center;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+}
+.form-actions button{
+    background-color: #3b82f6;
+    color:white;
+}
+.form-actions.cancel-button{
+    background-color: #354454;
+    color:white;
+    border: 1px solid  #667585;
+    transition:backlground-color 0.2 ease;
+}
+.form-actions.cancel-button:hover{
+    background-color: #475569;
+    color:white;
+}
