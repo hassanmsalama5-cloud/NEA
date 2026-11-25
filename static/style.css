@@ -236,7 +236,7 @@ edit.button:hover{
     background-color:#64748b;
     color:white;
 }
-.card-action a:hover,
+.card-actions a:hover,
 .card-actions button:hover{
     opacity:0.85;
 }
@@ -260,8 +260,9 @@ edit.button:hover{
     gap:12px;
     margin-top:20px;
 }
-.form-actions buttton,
-.form-actions.cancel-button{
+.form-actions button,
+.form-actions .cancel-button{
+    display:block;
     width:100%;
     padding:12px;
     border-radius:6px;
@@ -269,6 +270,7 @@ edit.button:hover{
     font-size:16px;
     font-weight: bold;
     text-decoration:none;
+    cursor:pointer;
 }
 .form-actions button{
     background-color: #3b82f6;
@@ -278,7 +280,7 @@ edit.button:hover{
     background-color: #354454;
     color:white;
     border: 1px solid  #667585;
-    transition:backlground-color 0.2 ease;
+    transition:background-color 0.2 ease;
 }
 .form-actions.cancel-button:hover{
     background-color: #475569;
