@@ -853,9 +853,6 @@ def add_screening():
             )
     finally:
             con.close()
-
-
-
 @app.route("/admin_logout")
 def admin_logout():
     session.pop("admin_id",None)
